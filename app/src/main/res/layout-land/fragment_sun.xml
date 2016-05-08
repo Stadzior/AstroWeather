@@ -9,8 +9,11 @@
     tools:context="com.example.kamil.astroweather.sun$PlaceholderFragment">
 
     <TextView
-        android:id="@+id/section_label"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="SmartphoneLAND"
+        android:id="@+id/textView2"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
