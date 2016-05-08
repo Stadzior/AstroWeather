@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private static final String SECTION_NAME = "section_name";
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -102,19 +104,21 @@ public class MainActivity extends AppCompatActivity {
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
         }
+
+        private static String sectionTitle;
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(int position) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            sectionTitle = position == 0 ? "Sun" : "Moon";
+            args.putString(SECTION_NAME,sectionTitle);
             fragment.setArguments(args);
             return fragment;
         }
@@ -124,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_sun, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            textView.setText(getArguments().getString(SECTION_NAME));
             return rootView;
         }
     }
@@ -157,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
             if(isTablet){
                 return "All";
             }else{
-                switch (position) {
+                switch (position){
                     case 0:
                         return "Sun";
                     case 1:
