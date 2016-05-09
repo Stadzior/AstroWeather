@@ -12,8 +12,14 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_title_sync_frequency" />
 
-    <Preference android:title="@string/pref_coordinates">
-        <intent android:action="android.settings.SYNC_SETTINGS" />
-    </Preference>
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue=""
+        android:inputType="number"
+        android:key="OK"
+        android:lines="2"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_coordinates" />
 
 </PreferenceScreen>
