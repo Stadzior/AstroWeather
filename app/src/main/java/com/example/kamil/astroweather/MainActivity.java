@@ -1,5 +1,6 @@
 package com.example.kamil.astroweather;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -84,11 +85,13 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
+            MainActivity.this.startActivity(myIntent);
         }
 
         return super.onOptionsItemSelected(item);
