@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private boolean isTablet;
+    private static boolean isTablet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private static final String SECTION_NAME = "section_name";
+    private static final String SECTION_NAME_PROPERTY = "section_name";
 
     /**
      * A placeholder fragment containing a simple view.
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             sectionTitle = position == 0 ? "Sun" : "Moon";
-            args.putString(SECTION_NAME,sectionTitle);
+            args.putString(SECTION_NAME_PROPERTY,sectionTitle);
             fragment.setArguments(args);
             return fragment;
         }
@@ -129,9 +129,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_sun, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getArguments().getString(SECTION_NAME));
+            View rootView;
+
+            if(isTablet){
+                rootView = inflater.inflate(R.layout.fragment_common, container, false);
+            }else{
+                if(sectionTitle.contains("Sun")){
+                    rootView = inflater.inflate(R.layout.fragment_sun, container, false);
+                }
+                else{
+                    rootView = inflater.inflate(R.layout.fragment_moon, container, false);
+                }
+            }
+
             return rootView;
         }
     }
