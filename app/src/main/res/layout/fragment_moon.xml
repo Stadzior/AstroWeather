@@ -5,16 +5,17 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/idSun"
+        android:id="@+id/idMoon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
-        android:id="@+id/contentSun"
+        android:id="@+id/contentMoon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:textAppearance="?attr/textAppearanceListItem" />
+
 </LinearLayout>

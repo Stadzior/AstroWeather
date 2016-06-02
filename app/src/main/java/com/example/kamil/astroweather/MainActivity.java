@@ -1,27 +1,25 @@
 package com.example.kamil.astroweather;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.support.design.widget.TabLayout;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
+import android.view.ViewParent;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -31,13 +29,13 @@ public class MainActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
-    private static boolean isTablet;
+    private static ViewPager mViewPager;
+    public static boolean isTablet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -62,16 +60,37 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    refreshView(view.getContext(),view.getParent());
+                }
+            });
+        }
 
     }
 
+    public void refreshView(Context context,ViewParent parent){
+        TextView textView;
+        if(isTablet){
+            textView = (TextView) findViewById(R.id.contentSun);
+            textView.setText("Zaktualizowano w sun.");
+            textView = (TextView) findViewById(R.id.contentMoon);
+            textView.setText("Zaktualizowano w moon.");
+        }
+        else{
+            if(parent instanceof SunFragment){   // Do poprawy warunek!
+                textView = (TextView) findViewById(R.id.contentSun);
+                textView.setText("Zaktualizowano w sun.");
+            }
+            else{
+                textView = (TextView) findViewById(R.id.contentMoon);
+                textView.setText("Zaktualizowano w moon.");
+            }
+        }
+        displayToast(context,"Data has been refreshed.", Color.WHITE, Color.BLUE, 5000);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -97,92 +116,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private static final String SECTION_NAME_PROPERTY = "section_name";
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-
-        public PlaceholderFragment() {
-        }
-
-        private static String sectionTitle;
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int position) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            sectionTitle = position == 0 ? "Sun" : "Moon";
-            args.putString(SECTION_NAME_PROPERTY,sectionTitle);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView;
-
-            if(isTablet){
-                rootView = inflater.inflate(R.layout.fragment_common, container, false);
-            }else{
-                if(sectionTitle.contains("Sun")){
-                    rootView = inflater.inflate(R.layout.fragment_sun, container, false);
-                }
-                else{
-                    rootView = inflater.inflate(R.layout.fragment_moon, container, false);
-                }
-            }
-
-            return rootView;
-        }
-    }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return isTablet ? 1 : 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if(isTablet){
-                return "All";
-            }else{
-                switch (position){
-                    case 0:
-                        return "Sun";
-                    case 1:
-                        return "Moon";
-                }
-            }
-
-            return null;
-        }
+    public static void displayToast(Context activity,String text,int textColor,int backgroundColor,int duration)
+    {
+        Toast toast = Toast.makeText(activity,text, duration);
+        TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+        v.setTextColor(textColor);
+        v.setBackgroundColor(backgroundColor);
+        toast.show();
     }
 }
