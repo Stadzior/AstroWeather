@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -38,10 +39,14 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private static boolean isTablet;
+    private static int longitude;
+    private static int latitude;
+    private static int syncFrequencyMinutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         int sizeOfScreen = (getResources().getConfiguration().screenLayout &
                 Configuration.SCREENLAYOUT_SIZE_MASK);
@@ -56,22 +61,43 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        if (mViewPager != null) {
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+        }
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        if (tabLayout != null) {
+            tabLayout.setupWithViewPager(mViewPager);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    refreshData(new Fragment(),view);
+                }
+            });
+        }
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putInt("longitude", longitude);
+        savedInstanceState.putInt("latitude", latitude);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        longitude = savedInstanceState.getInt("longitude");
+        latitude = savedInstanceState.getInt("latitude");
+    }
+
+    private void refreshData(Fragment fragment,View view){
+        Snackbar.make(view, "Data has been refreshed.", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -87,8 +113,6 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
 
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
             MainActivity.this.startActivity(myIntent);
