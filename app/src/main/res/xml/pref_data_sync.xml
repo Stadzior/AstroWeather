@@ -14,25 +14,25 @@
 
     <EditTextPreference
         android:capitalize="words"
-        android:defaultValue=""
-        android:inputType="number"
-        android:key="OK"
+        android:defaultValue="0"
+        android:inputType="numberDecimal"
+        android:key="longitude"
         android:lines="2"
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_longitude" />
     <EditTextPreference
     android:capitalize="words"
-    android:defaultValue=""
-    android:inputType="number"
-    android:key="OK"
+    android:defaultValue="0"
+    android:inputType="numberDecimal"
+    android:key="latitude"
     android:lines="2"
     android:selectAllOnFocus="true"
     android:singleLine="true"
     android:title="@string/pref_latitude" />
 
     <ListPreference
-        android:defaultValue="0"
+        android:defaultValue="E,N"
         android:entries="@array/pref_directions_values"
         android:entryValues="@array/pref_directions_values"
         android:key="directions"

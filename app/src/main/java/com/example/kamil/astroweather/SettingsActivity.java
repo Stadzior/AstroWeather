@@ -197,10 +197,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
-            startActivity(new Intent(SettingsActivity.this, MainActivity.class)
-                    .putExtra("Longitude",settings.getInt("longitude",0))
-                    .putExtra("Latitude", settings.getInt("latitude",0))
-                    .putExtra("Directions",settings.getString("directions","E,N")));
+            Intent intentWithSettings = new Intent(SettingsActivity.this, MainActivity.class)
+                    .putExtra("Longitude",Double.parseDouble(settings.getString("longitude","0")))
+                    .putExtra("Latitude", Double.parseDouble(settings.getString("latitude","0")))
+                    .putExtra("Directions", settings.getString("directions", "E,N"));
+            startActivity(intentWithSettings);
             return true;
         }
         return super.onOptionsItemSelected(item);

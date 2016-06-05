@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static boolean isTablet;
 
-    private static int longitude;
-    private static int latitude;
+    private static double longitude;
+    private static double latitude;
 
     private static char longitudeDirection;
     private static char latitudeDirection;
@@ -95,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Filling in settings in bottom text view
         Intent intent = getIntent();
-        longitude = intent.getIntExtra("Logitude", 0);
-        latitude = intent.getIntExtra("Latitude",0);
+        longitude = intent.getDoubleExtra("Longitude", 0.0);
+        latitude = intent.getDoubleExtra("Latitude", 0.0);
 
         String directions = getIntent().getStringExtra("Directions");
 
@@ -139,14 +139,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
-        savedInstanceState.putInt("longitude", longitude);
-        savedInstanceState.putInt("latitude", latitude);
+        savedInstanceState.putDouble("longitude", longitude);
+        savedInstanceState.putDouble("latitude", latitude);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState){
-        longitude = savedInstanceState.getInt("longitude");
-        latitude = savedInstanceState.getInt("latitude");
+        longitude = savedInstanceState.getDouble("longitude");
+        latitude = savedInstanceState.getDouble("latitude");
     }
 
     private void refreshData(Fragment fragment,View view){
