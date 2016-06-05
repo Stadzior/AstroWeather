@@ -22,6 +22,9 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
 
     /**
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private static TextView clock;
     private static boolean isTablet;
     private static int longitude;
     private static int latitude;
@@ -79,7 +83,29 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+        clock = (TextView) findViewById(R.id.current_time);
+        //Thread for a clock
+        Thread t = new Thread() {
 
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                SimpleDateFormat dataFormat = new SimpleDateFormat("HH:mm:ss");
+                                clock.setText(dataFormat.format(new Date(System.currentTimeMillis())));
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        t.start();
     }
 
     @Override

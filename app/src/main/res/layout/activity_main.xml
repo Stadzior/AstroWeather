@@ -51,11 +51,11 @@
         android:layout_height="50dp"
         android:layout_gravity="end|bottom">
         <TextView
-            android:id="@+id/time"
+            android:id="@+id/current_time"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="30sp"
-            android:text="00:00:00"
+            android:text=""
             android:layout_marginRight="5sp"
             />
         <TextView
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="30sp"
-            android:text="45°E"
+            android:text=""
             android:layout_marginRight="5sp"
             />
         <TextView
@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="30sp"
-            android:text="15°S"
+            android:text=""
             />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

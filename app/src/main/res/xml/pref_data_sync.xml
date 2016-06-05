@@ -30,14 +30,13 @@
     android:selectAllOnFocus="true"
     android:singleLine="true"
     android:title="@string/pref_latitude" />
-    <EditTextPreference
-        android:capitalize="words"
-        android:defaultValue=""
-        android:inputType="number"
-        android:key="OK"
-        android:lines="2"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_latitude" />
 
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/pref_directions_values"
+        android:entryValues="@array/pref_directions_values"
+        android:key="directions"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_directions" />
 </PreferenceScreen>
