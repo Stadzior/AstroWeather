@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private static char longitudeDirection;
     private static char latitudeDirection;
 
-    private static int syncFrequencyMinutes;
+    private static int syncIntervalInMinutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    refreshData(new Fragment(),view);
+                    refreshData(new Fragment());
                 }
             });
         }
@@ -111,10 +111,36 @@ public class MainActivity extends AppCompatActivity {
         longitudeTextView.setText(new StringBuilder().append(longitude).append("°").append(longitudeDirection).toString());
         latitudeTextView.setText(new StringBuilder().append(latitude).append("°").append(latitudeDirection).toString());
 
+        syncIntervalInMinutes = intent.getIntExtra("syncIntervalInMinutes",15);
+
+        if(syncIntervalInMinutes>0) {   // -1 -> NEVER
+            //Thread for refreshing data
+            Thread refreshThread = new Thread() {
+
+                @Override
+                public void run() {
+                    try {
+                        while (!isInterrupted()) {
+                            Thread.sleep(syncIntervalInMinutes * 60 * 1000); // * 60(minutes to seconds) * 1000 (seconds to milliseconds)
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    refreshData(mSectionsPagerAdapter.getItem(0));
+                                    refreshData(mSectionsPagerAdapter.getItem(1));
+                                }
+                            });
+                        }
+                    } catch (InterruptedException e) {
+                    }
+                }
+            };
+
+            refreshThread.start();
+        }
         clock = (TextView) findViewById(R.id.current_time);
 
         //Thread for a clock
-        Thread t = new Thread() {
+        Thread clockThread = new Thread() {
 
             @Override
             public void run() {
@@ -134,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        t.start();
+        clockThread.start();
     }
 
     @Override
@@ -149,9 +175,12 @@ public class MainActivity extends AppCompatActivity {
         latitude = savedInstanceState.getDouble("latitude");
     }
 
-    private void refreshData(Fragment fragment,View view){
-        Snackbar.make(view, "Data has been refreshed.", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+    private void refreshData(Fragment fragment){
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (fab != null) {
+            Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
     }
 
     @Override

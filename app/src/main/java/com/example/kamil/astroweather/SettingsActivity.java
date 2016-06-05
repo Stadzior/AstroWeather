@@ -200,7 +200,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             Intent intentWithSettings = new Intent(SettingsActivity.this, MainActivity.class)
                     .putExtra("Longitude",Double.parseDouble(settings.getString("longitude","0")))
                     .putExtra("Latitude", Double.parseDouble(settings.getString("latitude","0")))
-                    .putExtra("Directions", settings.getString("directions", "E,N"));
+                    .putExtra("Directions", settings.getString("directions", "E,N"))
+                    .putExtra("syncIntervalInMinutes", Integer.parseInt(settings.getString("sync_frequency", "15")));
             startActivity(intentWithSettings);
             return true;
         }
