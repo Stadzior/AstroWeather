@@ -15,6 +15,6 @@
         android:id="@+id/textView3"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:text="NO SIEMA ZIOM" />
+        android:text="Sun" />
 
 </RelativeLayout>

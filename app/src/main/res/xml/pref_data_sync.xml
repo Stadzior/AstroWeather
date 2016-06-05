@@ -22,6 +22,15 @@
         android:singleLine="true"
         android:title="@string/pref_longitude" />
     <EditTextPreference
+    android:capitalize="words"
+    android:defaultValue=""
+    android:inputType="number"
+    android:key="OK"
+    android:lines="2"
+    android:selectAllOnFocus="true"
+    android:singleLine="true"
+    android:title="@string/pref_latitude" />
+    <EditTextPreference
         android:capitalize="words"
         android:defaultValue=""
         android:inputType="number"

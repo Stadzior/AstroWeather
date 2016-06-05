@@ -150,21 +150,24 @@ public class MainActivity extends AppCompatActivity {
             return fragment;
         }
 
+        private static int tabCounter = 0;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView;
-
+            if(tabCounter>1) tabCounter = 0;
             if(isTablet){
                 rootView = inflater.inflate(R.layout.fragment_common, container, false);
             }else{
-                if(sectionTitle.contains("Sun")){
+                if(tabCounter == 0){
                     rootView = inflater.inflate(R.layout.fragment_sun, container, false);
                 }
                 else{
                     rootView = inflater.inflate(R.layout.fragment_moon, container, false);
                 }
             }
+
+            tabCounter++;
 
             return rootView;
         }
