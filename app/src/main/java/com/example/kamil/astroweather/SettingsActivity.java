@@ -4,9 +4,11 @@ package com.example.kamil.astroweather;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.media.audiofx.BassBoost;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +41,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
+
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
@@ -193,7 +196,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            NavUtils.navigateUpFromSameTask(this);
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
+            startActivity(new Intent(SettingsActivity.this, MainActivity.class)
+                    .putExtra("Longitude",settings.getInt("longitude",0))
+                    .putExtra("Latitude", settings.getInt("latitude",0))
+                    .putExtra("Directions",settings.getString("directions","E,N")));
             return true;
         }
         return super.onOptionsItemSelected(item);

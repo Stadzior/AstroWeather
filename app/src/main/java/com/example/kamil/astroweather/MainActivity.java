@@ -42,9 +42,18 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private static TextView clock;
+
+    private static TextView longitudeTextView;
+    private static TextView latitudeTextView;
+
     private static boolean isTablet;
+
     private static int longitude;
     private static int latitude;
+
+    private static char longitudeDirection;
+    private static char latitudeDirection;
+
     private static int syncFrequencyMinutes;
 
     @Override
@@ -83,7 +92,27 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        //Filling in settings in bottom text view
+        Intent intent = getIntent();
+        longitude = intent.getIntExtra("Logitude", 0);
+        latitude = intent.getIntExtra("Latitude",0);
+
+        String directions = getIntent().getStringExtra("Directions");
+
+        if (directions == null) directions = "E,N";
+
+        longitudeDirection = directions.charAt(0);
+        latitudeDirection = directions.charAt(2);
+
+        longitudeTextView = (TextView) findViewById(R.id.longitude);
+        latitudeTextView = (TextView) findViewById(R.id.latitude);
+
+        longitudeTextView.setText(new StringBuilder().append(longitude).append("°").append(longitudeDirection).toString());
+        latitudeTextView.setText(new StringBuilder().append(latitude).append("°").append(latitudeDirection).toString());
+
         clock = (TextView) findViewById(R.id.current_time);
+
         //Thread for a clock
         Thread t = new Thread() {
 
