@@ -354,14 +354,14 @@ public class MainActivity extends AppCompatActivity {
             super.onActivityCreated(savedInstanceState);
             if (savedInstanceState != null) {
                 //Restore the fragment's state here
-
+                ((TextView) this.getView().findViewById(R.id.sunriseValue)).setText(savedInstanceState.getString("test"));
             }
         }
         @Override
         public void onSaveInstanceState(Bundle outState) {
             super.onSaveInstanceState(outState);
-
             //Save the fragment's state here
+            outState.putString("test","dupa");
         }
     }
 
