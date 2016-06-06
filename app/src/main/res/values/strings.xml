@@ -45,5 +45,6 @@
     <string name="fullmoon">Full moon</string>
     <string name="moonphase">Moon phase</string>
     <string name="synodicday">Synodic month day.</string>
+    <string name="defaultPercent">0%</string>
 
 </resources>
