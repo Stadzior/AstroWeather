@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    refreshData(new Fragment());
+                    refreshData();
                 }
             });
         }
@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    refreshData(mSectionsPagerAdapter.getItem(0));
-                                    refreshData(mSectionsPagerAdapter.getItem(1));
+                                    refreshData();
+                                    refreshData();
                                 }
                             });
                         }
@@ -175,7 +175,25 @@ public class MainActivity extends AppCompatActivity {
         latitude = savedInstanceState.getDouble("latitude");
     }
 
-    private void refreshData(Fragment fragment){
+    private void refreshData(){
+        View fragmentView;
+        TextView controlView;
+        if(isTablet){
+            fragmentView = mSectionsPagerAdapter.getItem(0).getView();
+            controlView = (TextView) fragmentView.findViewById(R.id.sunriseValue);
+            controlView.setText("hehe");
+        }
+        else {
+            //Sun
+            fragmentView = mSectionsPagerAdapter.getItem(0).getView();
+            controlView = (TextView) fragmentView.findViewById(R.id.sunriseValue);
+            controlView.setText("hehe");
+
+            //Moon
+            fragmentView = mSectionsPagerAdapter.getItem(1).getView();
+            controlView = (TextView) fragmentView.findViewById(R.id.moonriseValue);
+            controlView.setText("hehe");
+        }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (fab != null) {
             Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
