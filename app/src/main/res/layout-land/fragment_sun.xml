@@ -8,11 +8,139 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$PlaceholderFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/textView2"
-        android:text="Sun" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:id="@+id/sunriseIcon"
+                android:layout_column="0"
+                android:src="@drawable/sunrise"
+                android:contentDescription="@string/sunrise"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="30dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/sunriseValue"
+                android:layout_column="1"
+                android:layout_gravity="center_vertical|right"
+                android:text="@string/midnight"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/zero"
+                android:id="@+id/sunriseAzimuth"
+                android:layout_column="2"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="25dp"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/dawn"
+                android:id="@+id/dawnDescription"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="30dp"
+                android:textSize="25sp"
+                android:layout_column="3"
+                android:layout_marginLeft="35dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/dawnValue"
+                android:layout_column="4"
+                android:layout_gravity="center_vertical|right"
+                android:text="@string/midnight"
+                android:textSize="30sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:id="@+id/sunsetIcon"
+                android:layout_column="0"
+                android:contentDescription="@string/sunset"
+                android:src="@drawable/sunset"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="30dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/sunsetValue"
+                android:layout_column="1"
+                android:layout_gravity="center_vertical|right"
+                android:text="@string/midnight"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/zero"
+                android:id="@+id/sunsetAzimuth"
+                android:layout_column="2"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="25dp"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/twilight"
+                android:id="@+id/twilightDescription"
+                android:layout_column="3"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="30dp"
+                android:textSize="25sp"
+                android:layout_marginLeft="35dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/twilightValue"
+                android:layout_column="4"
+                android:layout_gravity="center_vertical|right"
+                android:text="@string/midnight"
+                android:textSize="30sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </TableRow>
+
+    </TableLayout>
 </RelativeLayout>
