@@ -17,8 +17,8 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:id="@+id/sunriseIcon"
                 android:layout_column="0"
                 android:src="@drawable/sunrise"
@@ -56,9 +56,10 @@
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="30dp"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:layout_column="3"
-                android:layout_marginLeft="35dp" />
+                android:layout_marginLeft="35dp"
+                android:textIsSelectable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -76,8 +77,8 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:id="@+id/sunsetIcon"
                 android:layout_column="0"
                 android:contentDescription="@string/sunset"
@@ -116,8 +117,9 @@
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="30dp"
-                android:textSize="25sp"
-                android:layout_marginLeft="35dp" />
+                android:textSize="20sp"
+                android:layout_marginLeft="35dp"
+                android:textIsSelectable="false" />
 
             <TextView
                 android:layout_width="wrap_content"

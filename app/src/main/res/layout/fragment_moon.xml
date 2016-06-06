@@ -32,7 +32,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/moonriseValue"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|right"
+                android:layout_gravity="center_vertical"
                 android:text="@string/midnight"
                 android:textSize="30sp" />
 
@@ -58,7 +58,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/moonsetValue"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|right"
+                android:layout_gravity="center_vertical"
                 android:text="@string/midnight"
                 android:textSize="30sp" />
 
@@ -84,7 +84,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/newmoonValue"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|right"
+                android:layout_gravity="center_vertical"
                 android:text="@string/defaultDate"
                 android:textSize="30sp" />
         </TableRow>
@@ -109,7 +109,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/fullmoonValue"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|right"
+                android:layout_gravity="center_vertical"
                 android:text="@string/defaultDate"
                 android:textSize="30sp" />
         </TableRow>
@@ -136,7 +136,7 @@
                 android:id="@+id/moonPhaseValue"
                 android:layout_column="1"
                 android:textSize="30sp"
-                android:layout_gravity="center_vertical|right" />
+                android:layout_gravity="center_vertical" />
 
         </TableRow>
 
@@ -162,7 +162,7 @@
                 android:id="@+id/synodicDayValue"
                 android:layout_column="1"
                 android:textSize="30sp"
-                android:layout_gravity="center_vertical|right" />
+                android:layout_gravity="center_vertical" />
         </TableRow>
 
     </TableLayout>

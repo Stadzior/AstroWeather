@@ -22,7 +22,11 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.astrocalculator.AstroCalculator;
+import com.astrocalculator.AstroDateTime;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
     private static char latitudeDirection;
 
     private static int syncIntervalInMinutes;
+    private static AstroCalculator calculator;
+    private static AstroCalculator.Location location;
+    private static AstroDateTime dateTime;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -89,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     refreshData();
+                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                    if (fab != null) {
+                        Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
                 }
             });
         }
@@ -104,7 +115,9 @@ public class MainActivity extends AppCompatActivity {
 
         longitudeDirection = directions.charAt(0);
         latitudeDirection = directions.charAt(2);
-
+        dateTime = buildAstroDate(new Date(System.currentTimeMillis()));
+        location = buildAstroLocation(longitude, latitude, longitudeDirection == 'E', latitudeDirection == 'N');
+        calculator = new AstroCalculator(dateTime,location);
         longitudeTextView = (TextView) findViewById(R.id.longitude);
         latitudeTextView = (TextView) findViewById(R.id.latitude);
 
@@ -126,7 +139,11 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     refreshData();
-                                    refreshData();
+                                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                                    if (fab != null) {
+                                        Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+                                    }
                                 }
                             });
                         }
@@ -163,42 +180,98 @@ public class MainActivity extends AppCompatActivity {
         clockThread.start();
     }
 
+    public AstroCalculator.Location buildAstroLocation(double longitude,double latitude,boolean isEastern,boolean isNorthern){
+        double fixedLongitude = isEastern ? longitude : -longitude;
+        double fixedLatitude = isNorthern ? latitude : -latitude;
+        return new AstroCalculator.Location(fixedLongitude,fixedLatitude);
+    }
+
+    public AstroDateTime buildAstroDate(Date now){
+        boolean isDaylightSaving = (now.getMonth()>2 && now.getDay()>27) && (now.getMonth()<10 && now.getDay()<30);
+        return new AstroDateTime(now.getYear(),now.getMonth(),now.getDay(),now.getHours(),now.getMinutes(),now.getSeconds(),1,isDaylightSaving);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
-        savedInstanceState.putDouble("longitude", longitude);
-        savedInstanceState.putDouble("latitude", latitude);
+
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState){
-        longitude = savedInstanceState.getDouble("longitude");
-        latitude = savedInstanceState.getDouble("latitude");
+
+    }
+
+    private void updateValueOnScreen(View fragmentView,int textViewId,String value){
+        TextView controlView = (TextView) fragmentView.findViewById(textViewId);
+        controlView.setText(value);
+    }
+
+    public enum ValueType{
+        NUMBER,DATE,TIME,PERCENT
+    }
+    private String formatValue(Object value,ValueType type){
+        switch(type){
+            case NUMBER:
+            {
+                int intValue = (int)value;
+                return String.valueOf(intValue);
+            }
+            case DATE:
+            {
+                AstroDateTime date = (AstroDateTime) value;
+                return date.getDay() + "-" + date.getMonth() + "-" + date.getYear();
+            }
+            case TIME:
+            {
+                AstroDateTime date = (AstroDateTime) value;
+                return date.getHour() + ":" + date.getMinute();
+            }
+            case PERCENT:
+            {
+                return value.toString() + "%";
+            }
+            default:
+                return value.toString();
+        }
     }
 
     private void refreshData(){
         View fragmentView;
-        TextView controlView;
         if(isTablet){
-            fragmentView = mSectionsPagerAdapter.getItem(0).getView();
-            controlView = (TextView) fragmentView.findViewById(R.id.sunriseValue);
-            controlView.setText("hehe");
+            fragmentView = mSectionsPagerAdapter.currentPages.get(0).getView();
+            refreshSunValues(fragmentView);
+            refreshMoonValues(fragmentView);
         }
         else {
-            //Sun
-            fragmentView = mSectionsPagerAdapter.getItem(0).getView();
-            controlView = (TextView) fragmentView.findViewById(R.id.sunriseValue);
-            controlView.setText("hehe");
+            fragmentView = mSectionsPagerAdapter.currentPages.get(0).getView();
+            refreshSunValues(fragmentView);
+            fragmentView = mSectionsPagerAdapter.currentPages.get(1).getView();
+            refreshMoonValues(fragmentView);
+        }
+    }
 
-            //Moon
-            fragmentView = mSectionsPagerAdapter.getItem(1).getView();
-            controlView = (TextView) fragmentView.findViewById(R.id.moonriseValue);
-            controlView.setText("hehe");
-        }
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (fab != null) {
-            Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        }
+    private void refreshSunValues(View fragmentView){
+        AstroCalculator.SunInfo sunInfo = calculator.getSunInfo();
+
+        updateValueOnScreen(fragmentView,R.id.sunriseValue,formatValue(sunInfo.getSunrise(),ValueType.TIME));
+        updateValueOnScreen(fragmentView,R.id.sunriseAzimuth,String.valueOf(sunInfo.getAzimuthRise()).substring(0, 6));
+        updateValueOnScreen(fragmentView,R.id.sunsetValue,formatValue(sunInfo.getSunset(), ValueType.TIME));
+        updateValueOnScreen(fragmentView,R.id.sunsetAzimuth,String.valueOf(sunInfo.getAzimuthSet()).substring(0, 6));
+        updateValueOnScreen(fragmentView,R.id.dawnValue,formatValue(sunInfo.getTwilightMorning(), ValueType.TIME));
+        updateValueOnScreen(fragmentView,R.id.twilightValue,formatValue(sunInfo.getTwilightEvening(), ValueType.TIME));
+
+    }
+
+    private void refreshMoonValues(View fragmentView){
+        AstroCalculator.MoonInfo moonInfo = calculator.getMoonInfo();
+
+        updateValueOnScreen(fragmentView,R.id.moonriseValue,formatValue(moonInfo.getMoonrise(),ValueType.TIME));
+        updateValueOnScreen(fragmentView,R.id.moonsetValue,formatValue(moonInfo.getMoonrise(),ValueType.TIME));
+        updateValueOnScreen(fragmentView,R.id.fullmoonValue,formatValue(moonInfo.getNextFullMoon(),ValueType.DATE));
+        updateValueOnScreen(fragmentView,R.id.newmoonValue,formatValue(moonInfo.getNextNewMoon(),ValueType.DATE));
+        updateValueOnScreen(fragmentView,R.id.moonPhaseValue,formatValue(moonInfo.getIllumination(),ValueType.PERCENT));
+        updateValueOnScreen(fragmentView,R.id.synodicDayValue,formatValue(moonInfo.getAge(),ValueType.NUMBER));
+
     }
 
     @Override
@@ -285,11 +358,15 @@ public class MainActivity extends AppCompatActivity {
             super(fm);
         }
 
+        public ArrayList<Fragment> currentPages = new ArrayList<Fragment>();
+
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            Fragment fragment = PlaceholderFragment.newInstance(position + 1);
+            currentPages.add(fragment);
+            return fragment;
         }
 
         @Override
