@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/zero"
-                android:id="@+id/textView7"
+                android:id="@+id/sunriseAzimuth"
                 android:layout_column="2"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="25dp"
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/zero"
-                android:id="@+id/textView8"
+                android:id="@+id/sunsetAzimuth"
                 android:layout_column="5"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="25dp"
@@ -271,34 +271,5 @@
                 android:layout_gravity="center_vertical|right" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="56dp"
-            android:layout_height="56dp">
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </TableRow>
     </TableLayout>
 </RelativeLayout>

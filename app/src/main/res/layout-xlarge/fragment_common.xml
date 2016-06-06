@@ -248,7 +248,7 @@
             <ImageView
                 android:layout_width="75dp"
                 android:layout_height="75dp"
-                android:id="@+id/moonphaseIcon"
+                android:id="@+id/moonPhaseIcon"
                 android:layout_column="0"
                 android:src="@drawable/phase"
                 android:layout_marginRight="30dp"
@@ -260,7 +260,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/defaultPercent"
-                android:id="@+id/moonphaseValue"
+                android:id="@+id/moonPhaseValue"
                 android:layout_column="1"
                 android:textSize="40sp"
                 android:layout_gravity="center_vertical|right" />

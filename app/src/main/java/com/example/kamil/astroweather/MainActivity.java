@@ -2,32 +2,30 @@ package com.example.kamil.astroweather;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
 
 import com.astrocalculator.AstroCalculator;
 import com.astrocalculator.AstroDateTime;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Dictionary;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private static SectionsPagerAdapter mSectionsPagerAdapter;
+    public static HashMap<String,Fragment> currentPages;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -74,8 +73,19 @@ public class MainActivity extends AppCompatActivity {
                 Configuration.SCREENLAYOUT_SIZE_LARGE;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+
+//        Restore the fragments instances
+
+        currentPages =  new HashMap<String, Fragment>();
+        if(getSupportFragmentManager().getFragments() != null) {
+            if (isTablet) {
+                currentPages.put("commonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "commonFragment"));
+            } else {
+                currentPages.put("sunFragment", getSupportFragmentManager().getFragment(savedInstanceState, "sunFragment"));
+                currentPages.put("moonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "moonFragment"));
+            }
+        }
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -191,17 +201,7 @@ public class MainActivity extends AppCompatActivity {
         return new AstroDateTime(now.getYear(),now.getMonth(),now.getDay(),now.getHours(),now.getMinutes(),now.getSeconds(),1,isDaylightSaving);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState){
-
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState){
-
-    }
-
-    private void updateValueOnScreen(View fragmentView,int textViewId,String value){
+    private static void updateValueOnScreen(View fragmentView,int textViewId,String value){
         TextView controlView = (TextView) fragmentView.findViewById(textViewId);
         controlView.setText(value);
     }
@@ -209,12 +209,12 @@ public class MainActivity extends AppCompatActivity {
     public enum ValueType{
         NUMBER,DATE,TIME,PERCENT
     }
-    private String formatValue(Object value,ValueType type){
+    private static String formatValue(Object value,ValueType type){
         switch(type){
             case NUMBER:
             {
-                int intValue = (int)value;
-                return String.valueOf(intValue);
+                long longValue = Math.round((double)value);
+                return String.valueOf(longValue);
             }
             case DATE:
             {
@@ -224,49 +224,54 @@ public class MainActivity extends AppCompatActivity {
             case TIME:
             {
                 AstroDateTime date = (AstroDateTime) value;
-                return date.getHour() + ":" + date.getMinute();
+                StringBuilder minutes = new StringBuilder().append(String.valueOf(date.getMinute()));
+                if (minutes.length() == 1) {
+                    minutes.append("0");
+                    minutes.reverse();
+                }
+                return date.getHour() + ":" + minutes.toString();
             }
             case PERCENT:
             {
-                return value.toString() + "%";
+                return value.toString().substring(0,6) + "%";
             }
             default:
                 return value.toString();
         }
     }
 
-    private void refreshData(){
+    public static void refreshData(){
         View fragmentView;
         if(isTablet){
-            fragmentView = mSectionsPagerAdapter.currentPages.get(0).getView();
+            fragmentView = currentPages.get("commonFragment").getView();
             refreshSunValues(fragmentView);
             refreshMoonValues(fragmentView);
         }
         else {
-            fragmentView = mSectionsPagerAdapter.currentPages.get(0).getView();
+            fragmentView = currentPages.get("sunFragment").getView();
             refreshSunValues(fragmentView);
-            fragmentView = mSectionsPagerAdapter.currentPages.get(1).getView();
+            fragmentView = currentPages.get("moonFragment").getView();
             refreshMoonValues(fragmentView);
         }
     }
 
-    private void refreshSunValues(View fragmentView){
+    private static void refreshSunValues(View fragmentView){
         AstroCalculator.SunInfo sunInfo = calculator.getSunInfo();
 
         updateValueOnScreen(fragmentView,R.id.sunriseValue,formatValue(sunInfo.getSunrise(),ValueType.TIME));
-        updateValueOnScreen(fragmentView,R.id.sunriseAzimuth,String.valueOf(sunInfo.getAzimuthRise()).substring(0, 6));
+        updateValueOnScreen(fragmentView,R.id.sunriseAzimuth, formatValue(sunInfo.getAzimuthRise(), ValueType.NUMBER));
         updateValueOnScreen(fragmentView,R.id.sunsetValue,formatValue(sunInfo.getSunset(), ValueType.TIME));
-        updateValueOnScreen(fragmentView,R.id.sunsetAzimuth,String.valueOf(sunInfo.getAzimuthSet()).substring(0, 6));
+        updateValueOnScreen(fragmentView,R.id.sunsetAzimuth, formatValue(sunInfo.getAzimuthSet(), ValueType.NUMBER));
         updateValueOnScreen(fragmentView,R.id.dawnValue,formatValue(sunInfo.getTwilightMorning(), ValueType.TIME));
         updateValueOnScreen(fragmentView,R.id.twilightValue,formatValue(sunInfo.getTwilightEvening(), ValueType.TIME));
 
     }
 
-    private void refreshMoonValues(View fragmentView){
+    private static void refreshMoonValues(View fragmentView){
         AstroCalculator.MoonInfo moonInfo = calculator.getMoonInfo();
 
         updateValueOnScreen(fragmentView,R.id.moonriseValue,formatValue(moonInfo.getMoonrise(),ValueType.TIME));
-        updateValueOnScreen(fragmentView,R.id.moonsetValue,formatValue(moonInfo.getMoonrise(),ValueType.TIME));
+        updateValueOnScreen(fragmentView,R.id.moonsetValue,formatValue(moonInfo.getMoonset(),ValueType.TIME));
         updateValueOnScreen(fragmentView,R.id.fullmoonValue,formatValue(moonInfo.getNextFullMoon(),ValueType.DATE));
         updateValueOnScreen(fragmentView,R.id.newmoonValue,formatValue(moonInfo.getNextNewMoon(),ValueType.DATE));
         updateValueOnScreen(fragmentView,R.id.moonPhaseValue,formatValue(moonInfo.getIllumination(),ValueType.PERCENT));
@@ -341,10 +346,22 @@ public class MainActivity extends AppCompatActivity {
                     rootView = inflater.inflate(R.layout.fragment_moon, container, false);
                 }
             }
-
             tabCounter++;
-
             return rootView;
+        }
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            if (savedInstanceState != null) {
+                //Restore the fragment's state here
+
+            }
+        }
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            super.onSaveInstanceState(outState);
+
+            //Save the fragment's state here
         }
     }
 
@@ -358,14 +375,29 @@ public class MainActivity extends AppCompatActivity {
             super(fm);
         }
 
-        public ArrayList<Fragment> currentPages = new ArrayList<Fragment>();
-
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            Fragment fragment = PlaceholderFragment.newInstance(position + 1);
-            currentPages.add(fragment);
+
+            String key;
+            if(isTablet){
+                key = "commonFragment";
+            }else{
+                if(position == 0){
+                    key = "sunFragment";
+                }
+                else{
+                    key = "moonFragment";
+                }
+            }
+            boolean alreadyHasASavedState = currentPages.containsKey(key);
+            Fragment fragment;
+            if(alreadyHasASavedState){
+                fragment = currentPages.get(key);
+            }
+            else {
+                fragment = PlaceholderFragment.newInstance(position + 1);
+                currentPages.put(key,fragment);
+            }
             return fragment;
         }
 
@@ -390,5 +422,19 @@ public class MainActivity extends AppCompatActivity {
 
             return null;
         }
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        //Save the fragments instances
+        if(isTablet){
+            getSupportFragmentManager().putFragment(outState, "commonFragment", currentPages.get("commonFragment"));
+        }
+        else{
+            getSupportFragmentManager().putFragment(outState, "sunFragment", currentPages.get("sunFragment"));
+            getSupportFragmentManager().putFragment(outState, "moonFragment", currentPages.get("moonFragment"));
+        }
+
     }
 }
