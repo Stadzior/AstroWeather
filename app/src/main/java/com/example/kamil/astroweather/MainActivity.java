@@ -288,9 +288,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
 
         int id = item.getItemId();
         if (id == R.id.action_settings) {
@@ -338,24 +335,21 @@ public class MainActivity extends AppCompatActivity {
             if(tabCounter>1) tabCounter = 0;
             if(isTablet){
                 rootView = inflater.inflate(R.layout.fragment_common, container, false);
+                refreshSunValues(rootView);
+                refreshMoonValues(rootView);
             }else{
                 if(tabCounter == 0){
                     rootView = inflater.inflate(R.layout.fragment_sun, container, false);
+                    refreshSunValues(rootView);
                 }
                 else{
                     rootView = inflater.inflate(R.layout.fragment_moon, container, false);
+                    refreshMoonValues(rootView);
                 }
             }
             tabCounter++;
+
             return rootView;
-        }
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-            if (savedInstanceState != null) {
-                //Restore the fragment's state here
-                ((TextView) this.getView().findViewById(R.id.sunriseValue)).setText(savedInstanceState.getString("test"));
-            }
         }
         @Override
         public void onSaveInstanceState(Bundle outState) {
@@ -365,10 +359,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -419,7 +409,6 @@ public class MainActivity extends AppCompatActivity {
                         return "Moon";
                 }
             }
-
             return null;
         }
     }
