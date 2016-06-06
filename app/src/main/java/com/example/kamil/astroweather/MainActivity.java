@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static TextView longitudeTextView;
     private static TextView latitudeTextView;
 
-    private static boolean isTablet;
+    public static boolean isTablet;
 
     private static double longitude;
     private static double latitude;
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static void refreshSunValues(View fragmentView){
+    public static void refreshSunValues(View fragmentView){
         AstroCalculator.SunInfo sunInfo = calculator.getSunInfo();
 
         updateValueOnScreen(fragmentView,R.id.sunriseValue,formatValue(sunInfo.getSunrise(),ValueType.TIME));
@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private static void refreshMoonValues(View fragmentView){
+    public static void refreshMoonValues(View fragmentView){
         AstroCalculator.MoonInfo moonInfo = calculator.getMoonInfo();
 
         updateValueOnScreen(fragmentView,R.id.moonriseValue,formatValue(moonInfo.getMoonrise(),ValueType.TIME));
@@ -298,114 +298,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private static final String SECTION_NAME_PROPERTY = "section_name";
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-
-        public PlaceholderFragment() {
-        }
-
-        private static String sectionTitle;
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int position) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            sectionTitle = position == 0 ? "Sun" : "Moon";
-            args.putString(SECTION_NAME_PROPERTY,sectionTitle);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        private static int tabCounter = 0;
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView;
-            if(tabCounter>1) tabCounter = 0;
-            if(isTablet){
-                rootView = inflater.inflate(R.layout.fragment_common, container, false);
-                refreshSunValues(rootView);
-                refreshMoonValues(rootView);
-            }else{
-                if(tabCounter == 0){
-                    rootView = inflater.inflate(R.layout.fragment_sun, container, false);
-                    refreshSunValues(rootView);
-                }
-                else{
-                    rootView = inflater.inflate(R.layout.fragment_moon, container, false);
-                    refreshMoonValues(rootView);
-                }
-            }
-            tabCounter++;
-
-            return rootView;
-        }
-    }
-
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            String key;
-            if(isTablet){
-                key = "commonFragment";
-            }else{
-                if(position == 0){
-                    key = "sunFragment";
-                }
-                else{
-                    key = "moonFragment";
-                }
-            }
-            boolean alreadyHasASavedState = currentPages.containsKey(key);
-            Fragment fragment;
-            if(alreadyHasASavedState){
-                fragment = currentPages.get(key);
-            }
-            else {
-                fragment = PlaceholderFragment.newInstance(position + 1);
-                currentPages.put(key,fragment);
-            }
-            return fragment;
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return isTablet ? 1 : 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if(isTablet){
-                return "All";
-            }else{
-                switch (position){
-                    case 0:
-                        return "Sun";
-                    case 1:
-                        return "Moon";
-                }
-            }
-            return null;
-        }
-    }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
