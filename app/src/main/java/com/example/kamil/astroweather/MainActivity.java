@@ -351,12 +351,6 @@ public class MainActivity extends AppCompatActivity {
 
             return rootView;
         }
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-            //Save the fragment's state here
-            outState.putString("test","dupa");
-        }
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
