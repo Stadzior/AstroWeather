@@ -212,8 +212,9 @@ public class MainActivity extends AppCompatActivity {
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH)+1;
         int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-        boolean isDaylightSaving = (month>2 && dayOfMonth>27) && (month<10 && dayOfMonth<30);
-        return new AstroDateTime(year,month,dayOfMonth,now.getHours()+1,now.getMinutes(),now.getSeconds(),1,isDaylightSaving);
+        int timeZoneOffset = cal.getTimeZone().getRawOffset()/1000/60/60;
+        boolean isDaylightSaving = cal.getTimeZone().inDaylightTime(now);
+        return new AstroDateTime(year,month,dayOfMonth,now.getHours(),now.getMinutes(),now.getSeconds(),timeZoneOffset,isDaylightSaving);
     }
 
     private static void updateValueOnScreen(View fragmentView,int textViewId,String value){
