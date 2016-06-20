@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         longitude = longitude < 0.0 ? 0.0 : longitude;
         latitude = latitude < 0.0 ? 0.0 : latitude;
         longitude = longitude > 180 ? 180.0 : longitude;
-        latitude = latitude > 180 ? 180.0 : latitude;
+        latitude = latitude > 90 ? 90.0 : latitude;
     }
 
     public AstroCalculator.Location buildAstroLocation(double longitude,double latitude,boolean isEastern,boolean isNorthern){
@@ -308,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
             MainActivity.this.startActivity(myIntent);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

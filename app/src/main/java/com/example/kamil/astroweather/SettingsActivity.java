@@ -189,6 +189,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+
         }
     }
 
@@ -203,6 +204,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     .putExtra("Directions", settings.getString("directions", "E,N"))
                     .putExtra("syncIntervalInMinutes", Integer.parseInt(settings.getString("sync_frequency", "15")));
             startActivity(intentWithSettings);
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
