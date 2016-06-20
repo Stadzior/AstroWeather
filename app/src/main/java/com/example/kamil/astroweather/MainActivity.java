@@ -23,9 +23,12 @@ import com.astrocalculator.AstroCalculator;
 import com.astrocalculator.AstroDateTime;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Dictionary;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -116,8 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Filling in settings in bottom text view
         Intent intent = getIntent();
-        longitude = intent.getDoubleExtra("Longitude", 0.0);
-        latitude = intent.getDoubleExtra("Latitude", 0.0);
+        getFixedCoordinates(intent);
 
         String directions = getIntent().getStringExtra("Directions");
 
@@ -190,15 +192,28 @@ public class MainActivity extends AppCompatActivity {
         clockThread.start();
     }
 
+    private void getFixedCoordinates(Intent intent) {
+        longitude = intent.getDoubleExtra("Longitude", 0.0);
+        latitude = intent.getDoubleExtra("Latitude", 0.0);
+        longitude = longitude < 0.0 ? 0.0 : longitude;
+        latitude = latitude < 0.0 ? 0.0 : latitude;
+        longitude = longitude > 180 ? 180.0 : longitude;
+        latitude = latitude > 180 ? 180.0 : latitude;
+    }
+
     public AstroCalculator.Location buildAstroLocation(double longitude,double latitude,boolean isEastern,boolean isNorthern){
         double fixedLongitude = isEastern ? longitude : -longitude;
         double fixedLatitude = isNorthern ? latitude : -latitude;
-        return new AstroCalculator.Location(fixedLongitude,fixedLatitude);
+        return new AstroCalculator.Location(fixedLatitude,fixedLongitude);
     }
 
     public AstroDateTime buildAstroDate(Date now){
-        boolean isDaylightSaving = (now.getMonth()>2 && now.getDay()>27) && (now.getMonth()<10 && now.getDay()<30);
-        return new AstroDateTime(now.getYear(),now.getMonth(),now.getDay(),now.getHours(),now.getMinutes(),now.getSeconds(),1,isDaylightSaving);
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH)+1;
+        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+        boolean isDaylightSaving = (month>2 && dayOfMonth>27) && (month<10 && dayOfMonth<30);
+        return new AstroDateTime(year,month,dayOfMonth,now.getHours()+1,now.getMinutes(),now.getSeconds(),1,isDaylightSaving);
     }
 
     private static void updateValueOnScreen(View fragmentView,int textViewId,String value){
