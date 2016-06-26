@@ -20,7 +20,7 @@
     <string name="midnight">00:00</string>
     <string name="zero">0</string>
     <string name="newmoon">New moon</string>
-    <string name="defaultDate">01-01-1970</string>
+    <string name="defaultDate">01–01–1970</string>
     <string name="fullmoon">Full moon</string>
     <string name="moonphase">Moon phase</string>
     <string name="synodicday">Synodic month day.</string>
