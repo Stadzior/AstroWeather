@@ -7,30 +7,27 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.astrocalculator.AstroCalculator;
 import com.astrocalculator.AstroDateTime;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Dictionary;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity {
+import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
+import zh.wang.android.apis.yweathergetter4a.YahooWeather;
+import zh.wang.android.apis.yweathergetter4a.YahooWeatherInfoListener;
+
+
+public class MainActivity extends AppCompatActivity implements YahooWeatherInfoListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -43,129 +40,62 @@ public class MainActivity extends AppCompatActivity {
     private static SectionsPagerAdapter mSectionsPagerAdapter;
     public static HashMap<String,Fragment> currentPages;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
     private static TextView clock;
 
-    private static TextView longitudeTextView;
-    private static TextView latitudeTextView;
+//    private static TextView longitudeTextView;
+//    private static TextView latitudeTextView;
 
     public static boolean isTablet;
 
-    private static double longitude;
-    private static double latitude;
-
-    private static char longitudeDirection;
-    private static char latitudeDirection;
-
-    private static int syncIntervalInMinutes;
-    private static AstroCalculator calculator;
-    private static AstroCalculator.Location location;
-    private static AstroDateTime dateTime;
-
+   // private static WeatherInfo weatherInfo;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //weatherInfo = new WeatherInfo();
+
+        YahooWeather yahooWeather = new YahooWeather();
+        yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(),"Lodz Poland",this);
+        //gotWeatherInfo(weatherInfo);
+
         setContentView(R.layout.activity_main);
-        int sizeOfScreen = (getResources().getConfiguration().screenLayout &
-                Configuration.SCREENLAYOUT_SIZE_MASK);
-        isTablet = sizeOfScreen ==
-                Configuration.SCREENLAYOUT_SIZE_XLARGE || sizeOfScreen ==
-                Configuration.SCREENLAYOUT_SIZE_LARGE;
+
+        isTablet = determineIfIsTablet();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
-//        Restore the fragments instances
-
-        currentPages =  new HashMap<String, Fragment>();
-        if(getSupportFragmentManager().getFragments() != null) {
-            if (isTablet) {
-                currentPages.put("commonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "commonFragment"));
-            } else {
-                currentPages.put("sunFragment", getSupportFragmentManager().getFragment(savedInstanceState, "sunFragment"));
-                currentPages.put("moonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "moonFragment"));
-            }
-        }
+        RestoreFragmentsStates(savedInstanceState);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        if (mViewPager != null) {
-            mViewPager.setAdapter(mSectionsPagerAdapter);
-        }
+        SetUpViewPagerWithAdapter();
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        if (tabLayout != null) {
-            tabLayout.setupWithViewPager(mViewPager);
-        }
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    refreshData();
-                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                    if (fab != null) {
-                        Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }
-                }
-            });
-        }
+        SetUpRefreshButton();
 
         //Filling in settings in bottom text view
-        Intent intent = getIntent();
-        getFixedCoordinates(intent);
+        //Intent intent = getIntent();
+        //getFixedCoordinates(intent);
 
-        String directions = getIntent().getStringExtra("Directions");
+        //String directions = getIntent().getStringExtra("Directions");
 
-        if (directions == null) directions = "E,N";
+        //if (directions == null) directions = "E,N";
 
-        longitudeDirection = directions.charAt(0);
-        latitudeDirection = directions.charAt(2);
-        dateTime = buildAstroDate(new Date(System.currentTimeMillis()));
-        location = buildAstroLocation(longitude, latitude, longitudeDirection == 'E', latitudeDirection == 'N');
-        calculator = new AstroCalculator(dateTime,location);
-        longitudeTextView = (TextView) findViewById(R.id.longitude);
-        latitudeTextView = (TextView) findViewById(R.id.latitude);
+//        longitudeDirection = directions.charAt(0);
+//        latitudeDirection = directions.charAt(2);
+//        dateTime = buildAstroDate(new Date(System.currentTimeMillis()));
+//        location = buildAstroLocation(longitude, latitude, longitudeDirection == 'E', latitudeDirection == 'N');
+//        calculator = new AstroCalculator(dateTime,location);
+//        longitudeTextView = (TextView) findViewById(R.id.longitude);
+//        latitudeTextView = (TextView) findViewById(R.id.latitude);
+//
+//        longitudeTextView.setText(new StringBuilder().append(longitude).append("°").append(longitudeDirection).toString());
+//        latitudeTextView.setText(new StringBuilder().append(latitude).append("°").append(latitudeDirection).toString());
 
-        longitudeTextView.setText(new StringBuilder().append(longitude).append("°").append(longitudeDirection).toString());
-        latitudeTextView.setText(new StringBuilder().append(latitude).append("°").append(latitudeDirection).toString());
+        ClockThreadStart();
+    }
 
-        syncIntervalInMinutes = intent.getIntExtra("syncIntervalInMinutes",15);
-
-        if(syncIntervalInMinutes>0) {   // -1 -> NEVER
-            //Thread for refreshing data
-            Thread refreshThread = new Thread() {
-
-                @Override
-                public void run() {
-                    try {
-                        while (!isInterrupted()) {
-                            Thread.sleep(syncIntervalInMinutes * 60 * 1000); // * 60(minutes to seconds) * 1000 (seconds to milliseconds)
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    refreshData();
-                                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                                    if (fab != null) {
-                                        Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
-                                                .setAction("Action", null).show();
-                                    }
-                                }
-                            });
-                        }
-                    } catch (InterruptedException e) {
-                    }
-                }
-            };
-
-            refreshThread.start();
-        }
+    private void ClockThreadStart() {
         clock = (TextView) findViewById(R.id.current_time);
 
         //Thread for a clock
@@ -188,38 +118,96 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
         clockThread.start();
     }
 
-    private void getFixedCoordinates(Intent intent) {
-        longitude = intent.getDoubleExtra("Longitude", 0.0);
-        latitude = intent.getDoubleExtra("Latitude", 0.0);
-        longitude = longitude < 0.0 ? 0.0 : longitude;
-        latitude = latitude < 0.0 ? 0.0 : latitude;
-        longitude = longitude > 180 ? 180.0 : longitude;
-        latitude = latitude > 90 ? 90.0 : latitude;
+    private void SetUpRefreshButton() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    refreshData();
+                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                    if (fab != null) {
+                        Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                }
+            });
+        }
     }
 
-    public AstroCalculator.Location buildAstroLocation(double longitude,double latitude,boolean isEastern,boolean isNorthern){
-        double fixedLongitude = isEastern ? longitude : -longitude;
-        double fixedLatitude = isNorthern ? latitude : -latitude;
-        return new AstroCalculator.Location(fixedLatitude,fixedLongitude);
+    private void SetUpViewPagerWithAdapter() {
+        /*
+      The {@link ViewPager} that will host the section contents.
+     */
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
+        if (mViewPager != null) {
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+        }
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        if (tabLayout != null) {
+            tabLayout.setupWithViewPager(mViewPager);
+        }
     }
 
-    public AstroDateTime buildAstroDate(Date now){
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH)+1;
-        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-        int timeZoneOffset = cal.getTimeZone().getRawOffset()/1000/60/60;
-        boolean isDaylightSaving = cal.getTimeZone().inDaylightTime(now);
-        return new AstroDateTime(year,month,dayOfMonth,now.getHours(),now.getMinutes(),now.getSeconds(),timeZoneOffset,isDaylightSaving);
+    private void RestoreFragmentsStates(Bundle savedInstanceState) {
+        currentPages =  new HashMap<String, Fragment>();
+        if(getSupportFragmentManager().getFragments() != null) {
+            if (isTablet) {
+                currentPages.put("commonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "commonFragment"));
+            } else {
+                currentPages.put("sunFragment", getSupportFragmentManager().getFragment(savedInstanceState, "sunFragment"));
+                currentPages.put("moonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "moonFragment"));
+            }
+        }
     }
+
+    private boolean determineIfIsTablet() {
+        int sizeOfScreen = (getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK);
+        return sizeOfScreen ==
+                Configuration.SCREENLAYOUT_SIZE_XLARGE || sizeOfScreen ==
+                Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+//    private void getFixedCoordinates(Intent intent) {
+//        longitude = intent.getDoubleExtra("Longitude", 0.0);
+//        latitude = intent.getDoubleExtra("Latitude", 0.0);
+//        longitude = longitude < 0.0 ? 0.0 : longitude;
+//        latitude = latitude < 0.0 ? 0.0 : latitude;
+//        longitude = longitude > 180 ? 180.0 : longitude;
+//        latitude = latitude > 90 ? 90.0 : latitude;
+//    }
+
+//    public AstroCalculator.Location buildAstroLocation(double longitude,double latitude,boolean isEastern,boolean isNorthern){
+//        double fixedLongitude = isEastern ? longitude : -longitude;
+//        double fixedLatitude = isNorthern ? latitude : -latitude;
+//        return new AstroCalculator.Location(fixedLatitude,fixedLongitude);
+//    }
+//
+//    public AstroDateTime buildAstroDate(Date now){
+//        Calendar cal = Calendar.getInstance();
+//        int year = cal.get(Calendar.YEAR);
+//        int month = cal.get(Calendar.MONTH)+1;
+//        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+//        int timeZoneOffset = cal.getTimeZone().getRawOffset()/1000/60/60;
+//        boolean isDaylightSaving = cal.getTimeZone().inDaylightTime(now);
+//        return new AstroDateTime(year,month,dayOfMonth,now.getHours(),now.getMinutes(),now.getSeconds(),timeZoneOffset,isDaylightSaving);
+//    }
 
     private static void updateValueOnScreen(View fragmentView,int textViewId,String value){
         TextView controlView = (TextView) fragmentView.findViewById(textViewId);
         controlView.setText(value);
+    }
+
+    @Override
+    public void gotWeatherInfo(WeatherInfo weatherInfo) {
+        if(weatherInfo != null) {
+            int i = 1;
+        }
     }
 
     public enum ValueType{
@@ -259,41 +247,41 @@ public class MainActivity extends AppCompatActivity {
     public static void refreshData(){
         View fragmentView;
         if(isTablet){
-            fragmentView = currentPages.get("commonFragment").getView();
-            refreshSunValues(fragmentView);
-            refreshMoonValues(fragmentView);
+//            fragmentView = currentPages.get("commonFragment").getView();
+//            refreshSunValues(fragmentView);
+//            refreshMoonValues(fragmentView);
         }
         else {
-            fragmentView = currentPages.get("sunFragment").getView();
-            refreshSunValues(fragmentView);
-            fragmentView = currentPages.get("moonFragment").getView();
-            refreshMoonValues(fragmentView);
+//            fragmentView = currentPages.get("sunFragment").getView();
+//            refreshSunValues(fragmentView);
+//            fragmentView = currentPages.get("moonFragment").getView();
+//            refreshMoonValues(fragmentView);
         }
     }
 
-    public static void refreshSunValues(View fragmentView){
-        AstroCalculator.SunInfo sunInfo = calculator.getSunInfo();
-
-        updateValueOnScreen(fragmentView,R.id.sunriseValue,formatValue(sunInfo.getSunrise(),ValueType.TIME));
-        updateValueOnScreen(fragmentView,R.id.sunriseAzimuth, formatValue(sunInfo.getAzimuthRise(), ValueType.NUMBER));
-        updateValueOnScreen(fragmentView,R.id.sunsetValue,formatValue(sunInfo.getSunset(), ValueType.TIME));
-        updateValueOnScreen(fragmentView,R.id.sunsetAzimuth, formatValue(sunInfo.getAzimuthSet(), ValueType.NUMBER));
-        updateValueOnScreen(fragmentView,R.id.dawnValue,formatValue(sunInfo.getTwilightMorning(), ValueType.TIME));
-        updateValueOnScreen(fragmentView,R.id.twilightValue,formatValue(sunInfo.getTwilightEvening(), ValueType.TIME));
-
-    }
-
-    public static void refreshMoonValues(View fragmentView){
-        AstroCalculator.MoonInfo moonInfo = calculator.getMoonInfo();
-
-        updateValueOnScreen(fragmentView,R.id.moonriseValue,formatValue(moonInfo.getMoonrise(),ValueType.TIME));
-        updateValueOnScreen(fragmentView,R.id.moonsetValue,formatValue(moonInfo.getMoonset(),ValueType.TIME));
-        updateValueOnScreen(fragmentView,R.id.fullmoonValue,formatValue(moonInfo.getNextFullMoon(),ValueType.DATE));
-        updateValueOnScreen(fragmentView,R.id.newmoonValue,formatValue(moonInfo.getNextNewMoon(),ValueType.DATE));
-        updateValueOnScreen(fragmentView,R.id.moonPhaseValue,formatValue(moonInfo.getIllumination(),ValueType.PERCENT));
-        updateValueOnScreen(fragmentView,R.id.synodicDayValue,formatValue(moonInfo.getAge(),ValueType.NUMBER));
-
-    }
+//    public static void refreshSunValues(View fragmentView){
+//        AstroCalculator.SunInfo sunInfo = calculator.getSunInfo();
+//
+//        updateValueOnScreen(fragmentView,R.id.sunriseValue,formatValue(sunInfo.getSunrise(),ValueType.TIME));
+//        updateValueOnScreen(fragmentView,R.id.sunriseAzimuth, formatValue(sunInfo.getAzimuthRise(), ValueType.NUMBER));
+//        updateValueOnScreen(fragmentView,R.id.sunsetValue,formatValue(sunInfo.getSunset(), ValueType.TIME));
+//        updateValueOnScreen(fragmentView,R.id.sunsetAzimuth, formatValue(sunInfo.getAzimuthSet(), ValueType.NUMBER));
+//        updateValueOnScreen(fragmentView,R.id.dawnValue,formatValue(sunInfo.getTwilightMorning(), ValueType.TIME));
+//        updateValueOnScreen(fragmentView,R.id.twilightValue,formatValue(sunInfo.getTwilightEvening(), ValueType.TIME));
+//
+//    }
+//
+//    public static void refreshMoonValues(View fragmentView){
+//        AstroCalculator.MoonInfo moonInfo = calculator.getMoonInfo();
+//
+//        updateValueOnScreen(fragmentView,R.id.moonriseValue,formatValue(moonInfo.getMoonrise(),ValueType.TIME));
+//        updateValueOnScreen(fragmentView,R.id.moonsetValue,formatValue(moonInfo.getMoonset(),ValueType.TIME));
+//        updateValueOnScreen(fragmentView,R.id.fullmoonValue,formatValue(moonInfo.getNextFullMoon(),ValueType.DATE));
+//        updateValueOnScreen(fragmentView,R.id.newmoonValue,formatValue(moonInfo.getNextNewMoon(),ValueType.DATE));
+//        updateValueOnScreen(fragmentView,R.id.moonPhaseValue,formatValue(moonInfo.getIllumination(),ValueType.PERCENT));
+//        updateValueOnScreen(fragmentView,R.id.synodicDayValue,formatValue(moonInfo.getAge(),ValueType.NUMBER));
+//
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

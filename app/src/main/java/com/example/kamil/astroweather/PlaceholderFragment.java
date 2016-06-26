@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.example.kamil.astroweather.MainActivity;
 
 public class PlaceholderFragment extends Fragment {
 
@@ -33,16 +32,16 @@ public class PlaceholderFragment extends Fragment {
 
         if(MainActivity.isTablet){
             rootView = inflater.inflate(R.layout.fragment_common, container, false);
-            MainActivity.refreshSunValues(rootView);
-            MainActivity.refreshMoonValues(rootView);
+            //MainActivity.refreshSunValues(rootView);
+            //MainActivity.refreshMoonValues(rootView);
         }else{
             if(mPosition == 0){
                 rootView = inflater.inflate(R.layout.fragment_sun, container, false);
-                MainActivity.refreshSunValues(rootView);
+                //MainActivity.refreshSunValues(rootView);
             }
             else{
                 rootView = inflater.inflate(R.layout.fragment_moon, container, false);
-                MainActivity.refreshMoonValues(rootView);
+                //MainActivity.refreshMoonValues(rootView);
             }
         }
 
