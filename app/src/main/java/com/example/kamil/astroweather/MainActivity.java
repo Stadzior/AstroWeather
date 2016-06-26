@@ -66,27 +66,9 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         YahooWeather yahooWeather = new YahooWeather();
         yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), "Lodz", this);
 
-        //Filling in settings in bottom text view
-        //Intent intent = getIntent();
-        //getFixedCoordinates(intent);
-
-        //String directions = getIntent().getStringExtra("Directions");
-
-        //if (directions == null) directions = "E,N";
-
-//        longitudeDirection = directions.charAt(0);
-//        latitudeDirection = directions.charAt(2);
-//        dateTime = buildAstroDate(new Date(System.currentTimeMillis()));
-//        location = buildAstroLocation(longitude, latitude, longitudeDirection == 'E', latitudeDirection == 'N');
-//        calculator = new AstroCalculator(dateTime,location);
-//        longitudeTextView = (TextView) findViewById(R.id.longitude);
-//        latitudeTextView = (TextView) findViewById(R.id.latitude);
-//
-//        longitudeTextView.setText(new StringBuilder().append(longitude).append("°").append(longitudeDirection).toString());
-//        latitudeTextView.setText(new StringBuilder().append(latitude).append("°").append(latitudeDirection).toString());
-
         ClockThreadStart();
     }
+
 
     private void ClockThreadStart() {
         clock = (TextView) findViewById(R.id.current_time);
@@ -166,31 +148,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-//    private void getFixedCoordinates(Intent intent) {
-//        longitude = intent.getDoubleExtra("Longitude", 0.0);
-//        latitude = intent.getDoubleExtra("Latitude", 0.0);
-//        longitude = longitude < 0.0 ? 0.0 : longitude;
-//        latitude = latitude < 0.0 ? 0.0 : latitude;
-//        longitude = longitude > 180 ? 180.0 : longitude;
-//        latitude = latitude > 90 ? 90.0 : latitude;
-//    }
-
-//    public AstroCalculator.Location buildAstroLocation(double longitude,double latitude,boolean isEastern,boolean isNorthern){
-//        double fixedLongitude = isEastern ? longitude : -longitude;
-//        double fixedLatitude = isNorthern ? latitude : -latitude;
-//        return new AstroCalculator.Location(fixedLatitude,fixedLongitude);
-//    }
-//
-//    public AstroDateTime buildAstroDate(Date now){
-//        Calendar cal = Calendar.getInstance();
-//        int year = cal.get(Calendar.YEAR);
-//        int month = cal.get(Calendar.MONTH)+1;
-//        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-//        int timeZoneOffset = cal.getTimeZone().getRawOffset()/1000/60/60;
-//        boolean isDaylightSaving = cal.getTimeZone().inDaylightTime(now);
-//        return new AstroDateTime(year,month,dayOfMonth,now.getHours(),now.getMinutes(),now.getSeconds(),timeZoneOffset,isDaylightSaving);
-//    }
-
     private static void updateValueOnScreen(View fragmentView,int textViewId,String value){
         TextView controlView = (TextView) fragmentView.findViewById(textViewId);
         controlView.setText(value);
@@ -200,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     public void gotWeatherInfo(WeatherInfo weatherInfo) {
         if(weatherInfo != null) {
             View fragmentView = currentPages.get("sunFragment").getView();
-            ImageView imageView = (ImageView) fragmentView.findViewById(R.id.sunriseIcon);
+            ImageView imageView = (ImageView) (fragmentView != null ? fragmentView.findViewById(R.id.sunriseIcon) : null);
 
             URL url = null;
             try {
