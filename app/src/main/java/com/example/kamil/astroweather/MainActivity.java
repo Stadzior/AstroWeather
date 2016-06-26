@@ -2,25 +2,32 @@ package com.example.kamil.astroweather;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.astrocalculator.AstroDateTime;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 import zh.wang.android.apis.yweathergetter4a.YahooWeather;
@@ -29,33 +36,16 @@ import zh.wang.android.apis.yweathergetter4a.YahooWeatherInfoListener;
 
 public class MainActivity extends AppCompatActivity implements YahooWeatherInfoListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private static SectionsPagerAdapter mSectionsPagerAdapter;
     public static HashMap<String,Fragment> currentPages;
 
     private static TextView clock;
 
-//    private static TextView longitudeTextView;
-//    private static TextView latitudeTextView;
-
     public static boolean isTablet;
 
-   // private static WeatherInfo weatherInfo;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //weatherInfo = new WeatherInfo();
-
-        YahooWeather yahooWeather = new YahooWeather();
-        yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(),"Lodz Poland",this);
-        //gotWeatherInfo(weatherInfo);
 
         setContentView(R.layout.activity_main);
 
@@ -72,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         SetUpViewPagerWithAdapter();
 
         SetUpRefreshButton();
+
+        YahooWeather yahooWeather = new YahooWeather();
+        yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), "Lodz", this);
 
         //Filling in settings in bottom text view
         //Intent intent = getIntent();
@@ -206,7 +199,38 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     @Override
     public void gotWeatherInfo(WeatherInfo weatherInfo) {
         if(weatherInfo != null) {
-            int i = 1;
+            View fragmentView = currentPages.get("sunFragment").getView();
+            ImageView imageView = (ImageView) fragmentView.findViewById(R.id.sunriseIcon);
+
+            URL url = null;
+            try {
+                url = new URL(weatherInfo.getCurrentConditionIconURL());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            Bitmap currentConditionImage = null;
+            try {
+                currentConditionImage = new DownloadCurrentConditionIconAsync().execute(url).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            imageView.setImageBitmap(currentConditionImage);
+        }
+    }
+
+    private class DownloadCurrentConditionIconAsync extends AsyncTask<URL, WeatherInfo, Bitmap> {
+        protected Bitmap doInBackground(URL... urls) {
+            if(urls == null || urls.length > 1){
+                throw new IllegalArgumentException("Something went wrong with downloading current condition icon.");
+            }
+            try {
+                return BitmapFactory.decodeStream(urls[0].openConnection().getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 

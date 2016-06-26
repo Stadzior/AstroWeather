@@ -24,7 +24,6 @@
                 android:layout_height="45dp"
                 android:id="@+id/sunriseIcon"
                 android:layout_column="0"
-                android:src="@drawable/sunrise"
                 android:contentDescription="@string/sunrise"
                 android:layout_marginBottom="15dp"
                 android:layout_marginRight="30dp" />
