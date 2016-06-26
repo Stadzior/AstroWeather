@@ -14,30 +14,29 @@ public class PlaceholderFragment extends Fragment {
     public PlaceholderFragment() {
     }
 
-    private static String sectionTitle;
+    private int mPosition;
 
     public static PlaceholderFragment newInstance(int position) {
         PlaceholderFragment fragment = new PlaceholderFragment();
         Bundle args = new Bundle();
-        sectionTitle = position == 0 ? "Sun" : "Moon";
-        args.putString(SECTION_NAME_PROPERTY,sectionTitle);
+        String sectionTitle = position == 0 ? "Sun" : "Moon";
+        fragment.mPosition = position;
+        args.putString(SECTION_NAME_PROPERTY, sectionTitle);
         fragment.setArguments(args);
         return fragment;
     }
 
-    private static int tabCounter = 0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView;
-        if(tabCounter>1) tabCounter = 0;
 
         if(MainActivity.isTablet){
             rootView = inflater.inflate(R.layout.fragment_common, container, false);
             MainActivity.refreshSunValues(rootView);
             MainActivity.refreshMoonValues(rootView);
         }else{
-            if(tabCounter == 0){
+            if(mPosition == 0){
                 rootView = inflater.inflate(R.layout.fragment_sun, container, false);
                 MainActivity.refreshSunValues(rootView);
             }
@@ -46,7 +45,6 @@ public class PlaceholderFragment extends Fragment {
                 MainActivity.refreshMoonValues(rootView);
             }
         }
-        tabCounter++;
 
         return rootView;
     }

@@ -30,7 +30,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             fragment = MainActivity.currentPages.get(key);
         }
         else {
-            fragment = PlaceholderFragment.newInstance(position + 1);
+            fragment = PlaceholderFragment.newInstance(position);
             MainActivity.currentPages.put(key,fragment);
         }
         return fragment;
