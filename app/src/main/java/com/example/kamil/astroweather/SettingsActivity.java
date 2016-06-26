@@ -174,11 +174,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_data_sync);
             setHasOptionsMenu(true);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
         }
 
         @Override
@@ -199,10 +194,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (id == android.R.id.home) {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
             Intent intentWithSettings = new Intent(SettingsActivity.this, MainActivity.class)
-                    .putExtra("Longitude",Double.parseDouble(settings.getString("longitude","0")))
-                    .putExtra("Latitude", Double.parseDouble(settings.getString("latitude","0")))
-                    .putExtra("Directions", settings.getString("directions", "E,N"))
-                    .putExtra("syncIntervalInMinutes", Integer.parseInt(settings.getString("sync_frequency", "15")));
+                    .putExtra("WOID",Double.parseDouble(settings.getString("WOID","0")));
             startActivity(intentWithSettings);
             finish();
             return true;

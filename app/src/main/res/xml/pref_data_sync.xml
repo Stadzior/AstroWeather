@@ -1,38 +1,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
-         dismiss it. -->
-    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
-    <ListPreference
-        android:defaultValue="15"
-        android:entries="@array/pref_sync_frequency_titles"
-        android:entryValues="@array/pref_sync_frequency_values"
-        android:key="sync_frequency"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="@string/pref_title_sync_frequency" />
-
     <EditTextPreference
         android:capitalize="words"
-        android:defaultValue="0"
-        android:inputType="numberDecimal"
+        android:defaultValue="Łódź"
+        android:inputType="text"
         android:key="longitude"
-        android:lines="2"
+        android:lines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_longitude" />
-    <EditTextPreference
-    android:capitalize="words"
-    android:defaultValue="0"
-    android:inputType="numberDecimal"
-    android:key="latitude"
-    android:lines="2"
-    android:selectAllOnFocus="true"
-    android:singleLine="true"
-    android:title="@string/pref_latitude" />
 
     <ListPreference
-        android:defaultValue="E,N"
+        android:defaultValue="Metric"
         android:entries="@array/pref_directions_values"
         android:entryValues="@array/pref_directions_values"
         android:key="directions"
