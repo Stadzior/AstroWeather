@@ -1,9 +1,12 @@
 package com.example.kamil.astroweather;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -63,12 +66,11 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         SetUpRefreshButton();
 
-        YahooWeather yahooWeather = new YahooWeather();
-        yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), "Lodz", this);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.performClick();
 
         ClockThreadStart();
     }
-
 
     private void ClockThreadStart() {
         clock = (TextView) findViewById(R.id.current_time);
@@ -103,11 +105,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 @Override
                 public void onClick(View view) {
                     refreshData();
-                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                    if (fab != null) {
-                        Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }
                 }
             });
         }
@@ -129,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     }
 
     private void RestoreFragmentsStates(Bundle savedInstanceState) {
-        currentPages =  new HashMap<String, Fragment>();
+        currentPages = new HashMap<>();
         if(getSupportFragmentManager().getFragments() != null) {
             if (isTablet) {
                 currentPages.put("commonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "commonFragment"));
@@ -138,6 +135,13 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 currentPages.put("moonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "moonFragment"));
             }
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private boolean determineIfIsTablet() {
@@ -155,10 +159,15 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
     @Override
     public void gotWeatherInfo(WeatherInfo weatherInfo) {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if(weatherInfo != null) {
             View fragmentView = currentPages.get("sunFragment").getView();
             ImageView imageView = (ImageView) (fragmentView != null ? fragmentView.findViewById(R.id.sunriseIcon) : null);
+            TextView textView = (TextView) (fragmentView != null ? fragmentView.findViewById(R.id.sunriseValue) : null);
 
+            if (textView != null) {
+                textView.setText(weatherInfo.getAstronomySunrise());
+            }
             URL url = null;
             try {
                 url = new URL(weatherInfo.getCurrentConditionIconURL());
@@ -168,16 +177,27 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             Bitmap currentConditionImage = null;
             try {
                 currentConditionImage = new DownloadCurrentConditionIconAsync().execute(url).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-            imageView.setImageBitmap(currentConditionImage);
+            if (imageView != null) {
+                imageView.setImageBitmap(currentConditionImage);
+            }
+            if (fab != null) {
+                Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        }
+        else{
+            if (fab != null) {
+                Snackbar.make(fab, "Chosen location is invalid.", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
         }
     }
 
     private class DownloadCurrentConditionIconAsync extends AsyncTask<URL, WeatherInfo, Bitmap> {
+
         protected Bitmap doInBackground(URL... urls) {
             if(urls == null || urls.length > 1){
                 throw new IllegalArgumentException("Something went wrong with downloading current condition icon.");
@@ -189,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             }
             return null;
         }
+
     }
 
     public enum ValueType{
@@ -225,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         }
     }
 
-    public static void refreshData(){
+    public void refreshData(){
         View fragmentView;
         if(isTablet){
 //            fragmentView = currentPages.get("commonFragment").getView();
@@ -237,6 +258,17 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 //            refreshSunValues(fragmentView);
 //            fragmentView = currentPages.get("moonFragment").getView();
 //            refreshMoonValues(fragmentView);
+        }
+        if(isNetworkAvailable()) {
+            YahooWeather yahooWeather = new YahooWeather();
+            yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), PolishSignsResolver.removePolishSignsFromText("Łódź"), this);
+        }
+        else{
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            if (fab != null) {
+                Snackbar.make(fab, "There is no internet connection data can be deprecated.", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
         }
     }
 
