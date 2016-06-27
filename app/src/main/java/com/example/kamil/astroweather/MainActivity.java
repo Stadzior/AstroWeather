@@ -42,7 +42,9 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     private static TextView clock;
 
     public static boolean isTablet;
+
     private static YahooWeather.UNIT mUnit;
+    private static String mCityName;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,14 +195,16 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         updateValueOnScreen(fragmentView, R.id.forecastDay4, weatherInfo.getForecastInfo5().getForecastDay());
         updateCurrentConditionIcon(fragmentView, R.id.forecastIcon4, weatherInfo.getForecastInfo5().getForecastConditionIconURL());
-        updateValueOnScreen(fragmentView, R.id.forecastDesc4,weatherInfo.getForecastInfo5().getForecastText());
+        updateValueOnScreen(fragmentView, R.id.forecastDesc4, weatherInfo.getForecastInfo5().getForecastText());
     }
 
     private void RefreshTodayForecast(WeatherInfo weatherInfo) {
         View fragmentView = currentPages.get("sunFragment").getView();
-        updateValueOnScreen(fragmentView, R.id.city, weatherInfo.getLocationCity());
-        updateValueOnScreen(fragmentView, R.id.longitude, String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLon())))); //E-W
-        updateValueOnScreen(fragmentView, R.id.latitude, String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLat())))); //N-S
+        updateValueOnScreen(fragmentView, R.id.city, mCityName);
+        char longitudeSign = weatherInfo.getConditionLon().contains("-") ? 'W' : 'E';
+        updateValueOnScreen(fragmentView, R.id.longitude, String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLon()))) + '°' + longitudeSign); //E-W
+        char latitudeSign = weatherInfo.getConditionLat().contains("-") ? 'N' : 'S';
+        updateValueOnScreen(fragmentView, R.id.latitude, String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLat()))) + '°' + latitudeSign); //N-S
         int temp = weatherInfo.getCurrentTemp();
         String formattedTemp = (mUnit == YahooWeather.UNIT.FAHRENHEIT) ? String.valueOf(temp) + "°F" : String.valueOf(YahooWeather.turnFtoC(temp)) + "°C";
         updateValueOnScreen(fragmentView, R.id.temperature, formattedTemp);
@@ -306,8 +310,9 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                         .setAction("Action", null).show();
             }
             YahooWeather yahooWeather = new YahooWeather();
-            mUnit = YahooWeather.UNIT.FAHRENHEIT;
-            yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), PolishSignsResolver.removePolishSignsFromText("Łódź"), this);
+            mUnit = YahooWeather.UNIT.CELSIUS;
+            mCityName = "Łódź";
+            yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), PolishSignsResolver.removePolishSignsFromText(mCityName), this);
         }
         else{
             if (fab != null) {
