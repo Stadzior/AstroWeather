@@ -49,9 +49,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         }else{
             switch (position){
                 case 0:
-                    return "Sun";
+                    return "Today";
                 case 1:
-                    return "Moon";
+                    return "Next four days";
             }
         }
         return null;

@@ -16,10 +16,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/forecastDay1"
+                android:layout_column="1"
+                android:layout_gravity="center_vertical"
+                android:text="@string/midnight"
+                android:textSize="30sp"
+                android:layout_marginRight="15dp" />
+
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:id="@+id/moonriseIcon"
+                android:id="@+id/forecastIcon1"
                 android:layout_column="0"
                 android:src="@drawable/moonrise"
                 android:contentDescription="@string/sunrise"
@@ -30,11 +41,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/moonriseValue"
+                android:id="@+id/forecastDesc1"
                 android:layout_column="1"
                 android:layout_gravity="center_vertical"
-                android:text="@string/midnight"
-                android:textSize="30sp" />
+                android:text="@string/Description"
+                android:textSize="20sp" />
 
         </TableRow>
 
@@ -42,10 +53,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/forecastDay2"
+                android:layout_column="1"
+                android:layout_gravity="center_vertical"
+                android:text="@string/midnight"
+                android:textSize="30sp"
+                android:layout_marginRight="15dp" />
+
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:id="@+id/moonsetIcon"
+                android:id="@+id/forecastIcon2"
                 android:layout_column="0"
                 android:contentDescription="@string/sunset"
                 android:src="@drawable/moonset"
@@ -56,11 +78,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/moonsetValue"
+                android:id="@+id/forecastDesc2"
                 android:layout_column="1"
                 android:layout_gravity="center_vertical"
-                android:text="@string/midnight"
-                android:textSize="30sp" />
+                android:text="@string/Description"
+                android:textSize="20sp" />
 
         </TableRow>
 
@@ -68,10 +90,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/forecastDay3"
+                android:layout_column="1"
+                android:layout_gravity="center_vertical"
+                android:text="@string/midnight"
+                android:textSize="30sp"
+                android:layout_marginRight="15dp" />
+
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:id="@+id/newmoonIcon"
+                android:id="@+id/forecastIcon3"
                 android:layout_column="0"
                 android:contentDescription="@string/newmoon"
                 android:src="@drawable/newmoon"
@@ -82,21 +115,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/newmoonValue"
+                android:id="@+id/forecastDesc3"
                 android:layout_column="1"
                 android:layout_gravity="center_vertical"
-                android:text="@string/defaultDate"
-                android:textSize="30sp" />
+                android:text="@string/Description"
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/forecastDay4"
+                android:layout_column="1"
+                android:layout_gravity="center_vertical"
+                android:text="@string/midnight"
+                android:textSize="30sp"
+                android:layout_marginRight="15dp" />
+
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:id="@+id/fullmoonIcon"
+                android:id="@+id/forecastIcon4"
                 android:layout_column="0"
                 android:src="@drawable/full"
                 android:layout_marginRight="30dp"
@@ -107,62 +151,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/fullmoonValue"
+                android:id="@+id/forecastDesc4"
                 android:layout_column="1"
                 android:layout_gravity="center_vertical"
-                android:text="@string/defaultDate"
-                android:textSize="30sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:id="@+id/moonPhaseIcon"
-                android:layout_column="0"
-                android:src="@drawable/phase"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="15dp"
-                android:contentDescription="@string/moonphase" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/defaultPercent"
-                android:id="@+id/moonPhaseValue"
-                android:layout_column="1"
-                android:textSize="30sp"
-                android:layout_gravity="center_vertical" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:id="@+id/synodicDayIcon"
-                android:layout_column="0"
-                android:src="@drawable/month"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="15dp"
-                android:contentDescription="@string/synodicday" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/zero"
-                android:id="@+id/synodicDayValue"
-                android:layout_column="1"
-                android:textSize="30sp"
-                android:layout_gravity="center_vertical" />
+                android:text="@string/Description"
+                android:textSize="20sp" />
         </TableRow>
 
     </TableLayout>

@@ -34,30 +34,11 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/city"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|right"
-                android:textSize="30sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/zero"
-                android:id="@+id/longitude"
-                android:layout_column="2"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="25dp"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:textIsSelectable="false"
+                android:text="@string/city" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/zero"
-                android:id="@+id/latitude"
-                android:layout_column="4"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="25dp"
-                android:textSize="30sp" />
         </TableRow>
 
         <TableRow
@@ -69,7 +50,34 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/conditionsDesc"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:text="@string/Description"
+                android:layout_marginRight="30dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/noughPointNoughNough"
+                android:id="@+id/longitude"
+                android:layout_column="1"
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/noughPointNoughNough"
+                android:id="@+id/latitude"
+                android:layout_column="2"
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -77,15 +85,21 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/temperature"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|right"
-                android:textSize="30sp" />
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp"
+                android:text="@string/noughPointNoughNough"
+                android:textColor="#000000" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/preassure"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:text="@string/noughPointNoughNough"
+                android:textSize="20sp"
+                android:textColor="#000000"
+                android:layout_gravity="center_vertical" />
 
         </TableRow>
 
@@ -97,24 +111,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/dawnValue"
-                android:layout_column="2"
-                android:layout_gravity="center_vertical|right"
-                android:textSize="30sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                android:id="@+id/windSpeed"
+                android:layout_column="1"
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp"
+                android:text="@string/noughPointNoughNough" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/twilightValue"
+                android:id="@+id/windDirection"
                 android:layout_column="2"
-                android:layout_gravity="center_vertical|right"
-                android:textSize="30sp" />
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp"
+                android:text="@string/noughPointNoughNough" />
         </TableRow>
 
     </TableLayout>

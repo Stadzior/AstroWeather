@@ -18,7 +18,7 @@ public class PlaceholderFragment extends Fragment {
     public static PlaceholderFragment newInstance(int position) {
         PlaceholderFragment fragment = new PlaceholderFragment();
         Bundle args = new Bundle();
-        String sectionTitle = position == 0 ? "Sun" : "Moon";
+        String sectionTitle = position == 0 ? "Today" : "Next four days";
         fragment.mPosition = position;
         args.putString(SECTION_NAME_PROPERTY, sectionTitle);
         fragment.setArguments(args);

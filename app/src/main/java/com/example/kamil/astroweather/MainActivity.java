@@ -159,16 +159,10 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     public void gotWeatherInfo(WeatherInfo weatherInfo) {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if(weatherInfo != null) {
-            View fragmentView = currentPages.get("sunFragment").getView();
 
-            updateValueOnScreen(fragmentView, R.id.city, weatherInfo.getLocationCity());
-            updateValueOnScreen(fragmentView, R.id.longitude, weatherInfo.getConditionLon()); //E-W
-            updateValueOnScreen(fragmentView, R.id.latitude, weatherInfo.getConditionLat()); //N-S
-            updateValueOnScreen(fragmentView, R.id.temperature, String.valueOf(weatherInfo.getCurrentTemp()));
-            updateValueOnScreen(fragmentView, R.id.preassure, weatherInfo.getAtmospherePressure());
-            updateValueOnScreen(fragmentView, R.id.conditionsDesc, weatherInfo.getCurrentText());
+            RefreshTodayForecast(weatherInfo);
 
-            updateCurrentConditionIcon(weatherInfo, fragmentView);
+            RefreshNextFourDaysForecast(weatherInfo);
 
             if (fab != null) {
                 Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
@@ -182,12 +176,44 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             }
         }
     }
+    private void RefreshNextFourDaysForecast(WeatherInfo weatherInfo) {
+        View fragmentView = currentPages.get("moonFragment").getView();
+        updateValueOnScreen(fragmentView, R.id.forecastDay1, weatherInfo.getForecastInfo2().getForecastDay());
+        updateCurrentConditionIcon(fragmentView, R.id.forecastIcon1, weatherInfo.getForecastInfo2().getForecastConditionIconURL());
+        updateValueOnScreen(fragmentView, R.id.forecastDesc1,weatherInfo.getForecastInfo2().getForecastText());
 
-    private void updateCurrentConditionIcon(WeatherInfo weatherInfo, View fragmentView) {
-        ImageView imageView = (ImageView) (fragmentView != null ? fragmentView.findViewById(R.id.currentIcon) : null);
+        updateValueOnScreen(fragmentView, R.id.forecastDay2, weatherInfo.getForecastInfo3().getForecastDay());
+        updateCurrentConditionIcon(fragmentView, R.id.forecastIcon2, weatherInfo.getForecastInfo3().getForecastConditionIconURL());
+        updateValueOnScreen(fragmentView, R.id.forecastDesc2,weatherInfo.getForecastInfo3().getForecastText());
+
+        updateValueOnScreen(fragmentView, R.id.forecastDay3, weatherInfo.getForecastInfo4().getForecastDay());
+        updateCurrentConditionIcon(fragmentView, R.id.forecastIcon3, weatherInfo.getForecastInfo4().getForecastConditionIconURL());
+        updateValueOnScreen(fragmentView, R.id.forecastDesc3,weatherInfo.getForecastInfo4().getForecastText());
+
+        updateValueOnScreen(fragmentView, R.id.forecastDay4, weatherInfo.getForecastInfo5().getForecastDay());
+        updateCurrentConditionIcon(fragmentView, R.id.forecastIcon4, weatherInfo.getForecastInfo5().getForecastConditionIconURL());
+        updateValueOnScreen(fragmentView, R.id.forecastDesc4,weatherInfo.getForecastInfo5().getForecastText());
+    }
+
+    private void RefreshTodayForecast(WeatherInfo weatherInfo) {
+        View fragmentView = currentPages.get("sunFragment").getView();
+        updateValueOnScreen(fragmentView, R.id.city, weatherInfo.getLocationCity());
+        updateValueOnScreen(fragmentView, R.id.longitude, String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLon())))); //E-W
+        updateValueOnScreen(fragmentView, R.id.latitude, String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLat())))); //N-S
+        updateValueOnScreen(fragmentView, R.id.temperature, String.valueOf(weatherInfo.getCurrentTemp()));
+        updateValueOnScreen(fragmentView, R.id.preassure, weatherInfo.getAtmospherePressure());
+        updateValueOnScreen(fragmentView, R.id.conditionsDesc, weatherInfo.getCurrentText());
+        updateValueOnScreen(fragmentView, R.id.windDirection, weatherInfo.getWindDirection());
+        updateValueOnScreen(fragmentView, R.id.windSpeed, weatherInfo.getWindSpeed());
+
+        updateCurrentConditionIcon(fragmentView,R.id.currentIcon,weatherInfo.getCurrentConditionIconURL());
+    }
+
+    private void updateCurrentConditionIcon(View fragmentView, int controlId,String iconURL) {
+        ImageView imageView = (ImageView) (fragmentView != null ? fragmentView.findViewById(controlId) : null);
         URL url = null;
         try {
-            url = new URL(weatherInfo.getCurrentConditionIconURL());
+            url = new URL(iconURL);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -220,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
 
     public void refreshData(){
-        View fragmentView;
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if(isTablet){
 //            fragmentView = currentPages.get("commonFragment").getView();
 //            refreshSunValues(fragmentView);
@@ -233,11 +259,15 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 //            refreshMoonValues(fragmentView);
         }
         if(isNetworkAvailable()) {
+            if (fab != null) {
+                Snackbar.make(fab, "Refreshing... please wait...", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
             YahooWeather yahooWeather = new YahooWeather();
+            yahooWeather.setUnit(YahooWeather.UNIT.CELSIUS);
             yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), PolishSignsResolver.removePolishSignsFromText("Łódź"), this);
         }
         else{
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             if (fab != null) {
                 Snackbar.make(fab, "There is no internet connection data can be deprecated.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
