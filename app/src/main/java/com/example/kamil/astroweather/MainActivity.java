@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     private static TextView clock;
 
     public static boolean isTablet;
-
+    private static YahooWeather.UNIT mUnit;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    refreshData();
+                    QueryForData();
                 }
             });
         }
@@ -160,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if(weatherInfo != null) {
 
+
             RefreshTodayForecast(weatherInfo);
 
             RefreshNextFourDaysForecast(weatherInfo);
@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             }
         }
     }
+
     private void RefreshNextFourDaysForecast(WeatherInfo weatherInfo) {
         View fragmentView = currentPages.get("moonFragment").getView();
         updateValueOnScreen(fragmentView, R.id.forecastDay1, weatherInfo.getForecastInfo2().getForecastDay());
@@ -200,13 +201,64 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         updateValueOnScreen(fragmentView, R.id.city, weatherInfo.getLocationCity());
         updateValueOnScreen(fragmentView, R.id.longitude, String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLon())))); //E-W
         updateValueOnScreen(fragmentView, R.id.latitude, String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLat())))); //N-S
-        updateValueOnScreen(fragmentView, R.id.temperature, String.valueOf(weatherInfo.getCurrentTemp()));
-        updateValueOnScreen(fragmentView, R.id.preassure, weatherInfo.getAtmospherePressure());
+        int temp = weatherInfo.getCurrentTemp();
+        String formattedTemp = (mUnit == YahooWeather.UNIT.FAHRENHEIT) ? String.valueOf(temp) + "°F" : String.valueOf(YahooWeather.turnFtoC(temp)) + "°C";
+        updateValueOnScreen(fragmentView, R.id.temperature, formattedTemp);
+        updateValueOnScreen(fragmentView, R.id.preassure, weatherInfo.getAtmospherePressure() + "hPa");
         updateValueOnScreen(fragmentView, R.id.conditionsDesc, weatherInfo.getCurrentText());
-        updateValueOnScreen(fragmentView, R.id.windDirection, weatherInfo.getWindDirection());
-        updateValueOnScreen(fragmentView, R.id.windSpeed, weatherInfo.getWindSpeed());
+        updateValueOnScreen(fragmentView, R.id.windDirection, GetWindDirectionDescription(Integer.valueOf(weatherInfo.getWindDirection())));
+        double windSpeed = Double.valueOf(weatherInfo.getWindSpeed());
+        String formattedWindSpeed = (mUnit == YahooWeather.UNIT.CELSIUS) ? String.valueOf(windSpeed) + "KM/H" : String.valueOf(TurnKMtoMile(windSpeed))+ "MPH";
+        updateValueOnScreen(fragmentView, R.id.windSpeed, formattedWindSpeed);
+        updateValueOnScreen(fragmentView, R.id.humidity, weatherInfo.getAtmosphereHumidity() + "%");
+        double visibility = Double.valueOf(weatherInfo.getAtmosphereVisibility());
+        String formattedVisibility = (mUnit == YahooWeather.UNIT.CELSIUS) ? String.valueOf(visibility) + "KM" : String.valueOf(TurnKMtoMile(visibility)) + "M";
+        updateValueOnScreen(fragmentView, R.id.visibility, formattedVisibility);
+        updateCurrentConditionIcon(fragmentView, R.id.currentIcon, weatherInfo.getCurrentConditionIconURL());
+    }
 
-        updateCurrentConditionIcon(fragmentView,R.id.currentIcon,weatherInfo.getCurrentConditionIconURL());
+    private String GetWindDirectionDescription(int windDirection) {
+        if(windDirection>0 && windDirection<90){
+            return "EN";
+        }else{
+            if(windDirection == 90){
+                return "E";
+            }else{
+                if(windDirection>90 && windDirection<180){
+                    return "ES";
+                }else{
+                    if(windDirection == 180){
+                        return "S";
+                    }else{
+                        if(windDirection>180 && windDirection<270){
+                            return "WS";
+                        }else{
+                            if(windDirection == 270){
+                                return "W";
+                            }else{
+                                if(windDirection>270 && windDirection<360){
+                                    return "WN";
+                                }else{
+                                    if(windDirection == 360){
+                                        return "N";
+                                    }else{
+                                        return "No wind";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private double TurnKMtoMile(double km) {
+        return Math.round(km*0.621371192);
+    }
+
+    private double TurnMileToKM(double mile){
+        return Math.round(mile*1.609344);
     }
 
     private void updateCurrentConditionIcon(View fragmentView, int controlId,String iconURL) {
@@ -245,26 +297,16 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     }
 
 
-    public void refreshData(){
+    public void QueryForData(){
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if(isTablet){
-//            fragmentView = currentPages.get("commonFragment").getView();
-//            refreshSunValues(fragmentView);
-//            refreshMoonValues(fragmentView);
-        }
-        else {
-//            fragmentView = currentPages.get("sunFragment").getView();
-//            refreshSunValues(fragmentView);
-//            fragmentView = currentPages.get("moonFragment").getView();
-//            refreshMoonValues(fragmentView);
-        }
+
         if(isNetworkAvailable()) {
             if (fab != null) {
                 Snackbar.make(fab, "Refreshing... please wait...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
             YahooWeather yahooWeather = new YahooWeather();
-            yahooWeather.setUnit(YahooWeather.UNIT.CELSIUS);
+            mUnit = YahooWeather.UNIT.FAHRENHEIT;
             yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), PolishSignsResolver.removePolishSignsFromText("Łódź"), this);
         }
         else{
