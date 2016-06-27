@@ -22,8 +22,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.astrocalculator.AstroDateTime;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -162,27 +160,16 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if(weatherInfo != null) {
             View fragmentView = currentPages.get("sunFragment").getView();
-            ImageView imageView = (ImageView) (fragmentView != null ? fragmentView.findViewById(R.id.sunriseIcon) : null);
-            TextView textView = (TextView) (fragmentView != null ? fragmentView.findViewById(R.id.sunriseValue) : null);
 
-            if (textView != null) {
-                textView.setText(weatherInfo.getAstronomySunrise());
-            }
-            URL url = null;
-            try {
-                url = new URL(weatherInfo.getCurrentConditionIconURL());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            Bitmap currentConditionImage = null;
-            try {
-                currentConditionImage = new DownloadCurrentConditionIconAsync().execute(url).get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-            if (imageView != null) {
-                imageView.setImageBitmap(currentConditionImage);
-            }
+            updateValueOnScreen(fragmentView, R.id.city, weatherInfo.getLocationCity());
+            updateValueOnScreen(fragmentView, R.id.longitude, weatherInfo.getConditionLon()); //E-W
+            updateValueOnScreen(fragmentView, R.id.latitude, weatherInfo.getConditionLat()); //N-S
+            updateValueOnScreen(fragmentView, R.id.temperature, String.valueOf(weatherInfo.getCurrentTemp()));
+            updateValueOnScreen(fragmentView, R.id.preassure, weatherInfo.getAtmospherePressure());
+            updateValueOnScreen(fragmentView, R.id.conditionsDesc, weatherInfo.getCurrentText());
+
+            updateCurrentConditionIcon(weatherInfo, fragmentView);
+
             if (fab != null) {
                 Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -193,6 +180,25 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 Snackbar.make(fab, "Chosen location is invalid.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
+        }
+    }
+
+    private void updateCurrentConditionIcon(WeatherInfo weatherInfo, View fragmentView) {
+        ImageView imageView = (ImageView) (fragmentView != null ? fragmentView.findViewById(R.id.currentIcon) : null);
+        URL url = null;
+        try {
+            url = new URL(weatherInfo.getCurrentConditionIconURL());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Bitmap currentConditionImage = null;
+        try {
+            currentConditionImage = new DownloadCurrentConditionIconAsync().execute(url).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        if (imageView != null) {
+            imageView.setImageBitmap(currentConditionImage);
         }
     }
 
@@ -212,39 +218,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
     }
 
-    public enum ValueType{
-        NUMBER,DATE,TIME,PERCENT
-    }
-    private static String formatValue(Object value,ValueType type){
-        switch(type){
-            case NUMBER:
-            {
-                long longValue = Math.round((double)value);
-                return String.valueOf(longValue);
-            }
-            case DATE:
-            {
-                AstroDateTime date = (AstroDateTime) value;
-                return date.getDay() + "-" + date.getMonth() + "-" + date.getYear();
-            }
-            case TIME:
-            {
-                AstroDateTime date = (AstroDateTime) value;
-                StringBuilder minutes = new StringBuilder().append(String.valueOf(date.getMinute()));
-                if (minutes.length() == 1) {
-                    minutes.append("0");
-                    minutes.reverse();
-                }
-                return date.getHour() + ":" + minutes.toString();
-            }
-            case PERCENT:
-            {
-                return value.toString().substring(0,6) + "%";
-            }
-            default:
-                return value.toString();
-        }
-    }
 
     public void refreshData(){
         View fragmentView;
@@ -271,30 +244,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             }
         }
     }
-
-//    public static void refreshSunValues(View fragmentView){
-//        AstroCalculator.SunInfo sunInfo = calculator.getSunInfo();
-//
-//        updateValueOnScreen(fragmentView,R.id.sunriseValue,formatValue(sunInfo.getSunrise(),ValueType.TIME));
-//        updateValueOnScreen(fragmentView,R.id.sunriseAzimuth, formatValue(sunInfo.getAzimuthRise(), ValueType.NUMBER));
-//        updateValueOnScreen(fragmentView,R.id.sunsetValue,formatValue(sunInfo.getSunset(), ValueType.TIME));
-//        updateValueOnScreen(fragmentView,R.id.sunsetAzimuth, formatValue(sunInfo.getAzimuthSet(), ValueType.NUMBER));
-//        updateValueOnScreen(fragmentView,R.id.dawnValue,formatValue(sunInfo.getTwilightMorning(), ValueType.TIME));
-//        updateValueOnScreen(fragmentView,R.id.twilightValue,formatValue(sunInfo.getTwilightEvening(), ValueType.TIME));
-//
-//    }
-//
-//    public static void refreshMoonValues(View fragmentView){
-//        AstroCalculator.MoonInfo moonInfo = calculator.getMoonInfo();
-//
-//        updateValueOnScreen(fragmentView,R.id.moonriseValue,formatValue(moonInfo.getMoonrise(),ValueType.TIME));
-//        updateValueOnScreen(fragmentView,R.id.moonsetValue,formatValue(moonInfo.getMoonset(),ValueType.TIME));
-//        updateValueOnScreen(fragmentView,R.id.fullmoonValue,formatValue(moonInfo.getNextFullMoon(),ValueType.DATE));
-//        updateValueOnScreen(fragmentView,R.id.newmoonValue,formatValue(moonInfo.getNextNewMoon(),ValueType.DATE));
-//        updateValueOnScreen(fragmentView,R.id.moonPhaseValue,formatValue(moonInfo.getIllumination(),ValueType.PERCENT));
-//        updateValueOnScreen(fragmentView,R.id.synodicDayValue,formatValue(moonInfo.getAge(),ValueType.NUMBER));
-//
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
