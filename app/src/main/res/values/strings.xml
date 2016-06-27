@@ -28,5 +28,6 @@
     <string name="noughPointNoughNough">0.00</string>
     <string name="city">City</string>
     <string name="Description">Description</string>
+    <string name="Monday">Mon</string>
 
 </resources>

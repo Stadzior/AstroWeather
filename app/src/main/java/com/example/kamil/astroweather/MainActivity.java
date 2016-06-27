@@ -172,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             }
         }
         else{
+            View fragmentView = currentPages.get("sunFragment").getView();
+            updateValueOnScreen(fragmentView, R.id.city, mCityName);
             if (fab != null) {
                 Snackbar.make(fab, "Chosen location is invalid.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -310,8 +312,12 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                         .setAction("Action", null).show();
             }
             YahooWeather yahooWeather = new YahooWeather();
-            mUnit = YahooWeather.UNIT.CELSIUS;
-            mCityName = "Łódź";
+            mUnit = getIntent().getBooleanExtra("Units",true) ? YahooWeather.UNIT.CELSIUS : YahooWeather.UNIT.FAHRENHEIT;
+            if(mUnit == null)
+                mUnit = YahooWeather.UNIT.CELSIUS;
+            mCityName = getIntent().getStringExtra("City");
+            if(mCityName == null)
+                mCityName = "London";
             yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), PolishSignsResolver.removePolishSignsFromText(mCityName), this);
         }
         else{

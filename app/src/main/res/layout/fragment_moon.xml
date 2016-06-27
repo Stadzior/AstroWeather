@@ -23,7 +23,7 @@
                 android:id="@+id/forecastDay1"
                 android:layout_column="1"
                 android:layout_gravity="center_vertical"
-                android:text="@string/midnight"
+                android:text="@string/Monday"
                 android:textSize="30sp"
                 android:layout_marginRight="15dp" />
 
@@ -32,7 +32,7 @@
                 android:layout_height="45dp"
                 android:id="@+id/forecastIcon1"
                 android:layout_column="0"
-                android:src="@drawable/moonrise"
+                android:src="@drawable/full"
                 android:contentDescription="@string/sunrise"
                 android:layout_marginBottom="15dp"
                 android:layout_marginRight="30dp" />
@@ -60,7 +60,7 @@
                 android:id="@+id/forecastDay2"
                 android:layout_column="1"
                 android:layout_gravity="center_vertical"
-                android:text="@string/midnight"
+                android:text="@string/Monday"
                 android:textSize="30sp"
                 android:layout_marginRight="15dp" />
 
@@ -70,7 +70,7 @@
                 android:id="@+id/forecastIcon2"
                 android:layout_column="0"
                 android:contentDescription="@string/sunset"
-                android:src="@drawable/moonset"
+                android:src="@drawable/full"
                 android:layout_marginBottom="15dp"
                 android:layout_marginRight="30dp" />
 
@@ -97,7 +97,7 @@
                 android:id="@+id/forecastDay3"
                 android:layout_column="1"
                 android:layout_gravity="center_vertical"
-                android:text="@string/midnight"
+                android:text="@string/Monday"
                 android:textSize="30sp"
                 android:layout_marginRight="15dp" />
 
@@ -107,7 +107,7 @@
                 android:id="@+id/forecastIcon3"
                 android:layout_column="0"
                 android:contentDescription="@string/newmoon"
-                android:src="@drawable/newmoon"
+                android:src="@drawable/full"
                 android:layout_marginRight="30dp"
                 android:layout_marginBottom="15dp" />
 
@@ -133,7 +133,7 @@
                 android:id="@+id/forecastDay4"
                 android:layout_column="1"
                 android:layout_gravity="center_vertical"
-                android:text="@string/midnight"
+                android:text="@string/Monday"
                 android:textSize="30sp"
                 android:layout_marginRight="15dp" />
 

@@ -192,8 +192,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (id == android.R.id.home) {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
             Intent intentWithSettings = new Intent(SettingsActivity.this, MainActivity.class)
-                    .putExtra("City",settings.getString("City","London"))
-                    .putExtra("Units",settings.getString("Units","METRIC").compareTo("METRIC") == 0);
+                    .putExtra("City",settings.getString("CityName","London"))
+                    .putExtra("Units",settings.getString("Units","Metric").compareTo("Metric") == 0);
             startActivity(intentWithSettings);
             finish();
             return true;

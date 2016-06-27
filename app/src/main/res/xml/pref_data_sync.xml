@@ -4,7 +4,7 @@
         android:capitalize="words"
         android:defaultValue="Łódź"
         android:inputType="text"
-        android:key="longitude"
+        android:key="CityName"
         android:lines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
@@ -14,7 +14,7 @@
         android:defaultValue="Metric"
         android:entries="@array/pref_directions_values"
         android:entryValues="@array/pref_directions_values"
-        android:key="directions"
+        android:key="Units"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_directions" />
