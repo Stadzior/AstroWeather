@@ -3,6 +3,7 @@ package com.example.kamil.astroweather;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -20,8 +21,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -70,7 +73,22 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         SetUpRefreshButton();
 
-        AttachSpinnerOnItemSelectedListener();
+        DbManager.SetUpDatabase();
+
+        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(spinner.getContext(),);
+
+        AttachSpinnerOnItemSelectedListener(spinner);
+
+        Cursor resultSet = DbManager.FetchTableFromDatabase("Location","Name");
+        resultSet.moveToFirst();
+        for(int i = 0;i<3;i++){
+            spinner.setAdapter()
+                    resultSet.getString(0);
+            resultSet.moveToNext();
+        }
+        resultSet.close();
+
 
         ClockThreadStart();
     }
@@ -84,10 +102,10 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             Spinner spinner = (Spinner) findViewById(R.id.spinner);
             mCityName = spinner != null ? spinner.getSelectedItem().toString() : "London";
         }
+        DbManager.InsertIntoDatabase("Locations","Name",mCityName);
     }
 
-    private void AttachSpinnerOnItemSelectedListener() {
-        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+    private void AttachSpinnerOnItemSelectedListener(final Spinner spinner) {
         if (spinner != null) {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -166,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             } else {
                 currentPages.put("sunFragment", getSupportFragmentManager().getFragment(savedInstanceState, "sunFragment"));
                 currentPages.put("moonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "moonFragment"));
+
             }
         }
     }
