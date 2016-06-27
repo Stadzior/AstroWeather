@@ -11,6 +11,12 @@
         <item>Imperial</item>
     </string-array>
 
+    <string-array name="favourite_locations">
+        <item>łódź</item>
+        <item>kraków</item>
+        <item>szczebrzeszyn</item>
+    </string-array>
+
     <string name="pref_longitude">Location</string>
     <string name="pref_directions">Units</string>
     <string name="sunrise">Sunrise</string>

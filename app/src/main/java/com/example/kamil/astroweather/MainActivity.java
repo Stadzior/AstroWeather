@@ -20,7 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -316,8 +318,10 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             if(mUnit == null)
                 mUnit = YahooWeather.UNIT.CELSIUS;
             mCityName = getIntent().getStringExtra("City");
-            if(mCityName == null)
-                mCityName = "London";
+            if(mCityName == null) {
+                Spinner spinner = (Spinner) findViewById(R.id.spinner);
+                mCityName = spinner != null ? spinner.getSelectedItem().toString() : "London";
+            }
             yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), PolishSignsResolver.removePolishSignsFromText(mCityName), this);
         }
         else{
