@@ -4,7 +4,6 @@ package com.example.kamil.astroweather;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -17,6 +16,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -190,11 +190,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
-            Intent intentWithSettings = new Intent(SettingsActivity.this, MainActivity.class)
-                    .putExtra("City",settings.getString("CityName","London"))
-                    .putExtra("Units",settings.getString("Units","Metric").compareTo("Metric") == 0);
-            startActivity(intentWithSettings);
+            NavUtils.navigateUpFromSameTask(this);
+
+//            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
+//            Intent intentWithSettings = new Intent(SettingsActivity.this, MainActivity.class)
+//                    .putExtra("City",settings.getString("CityName","London"))
+//                    .putExtra("Units",settings.getString("Units","Metric").compareTo("Metric") == 0);
+//            startActivity(intentWithSettings);
             finish();
             return true;
         }

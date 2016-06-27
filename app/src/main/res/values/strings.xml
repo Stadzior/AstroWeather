@@ -48,5 +48,10 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="AboutText">App created for \"Mobile application programming\" laboratiories on Lodz University of Technology by Kamil Stadryniak</string>
+    <string name="T">T:</string>
+    <string name="P">P:</string>
+    <string name="W">W:</string>
+    <string name="H">H:</string>
+    <string name="V">V:</string>
 
 </resources>

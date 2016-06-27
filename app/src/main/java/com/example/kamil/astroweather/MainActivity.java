@@ -70,9 +70,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         SetUpRefreshButton();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.performClick();
-
         AttachSpinnerOnItemSelectedListener();
 
         ClockThreadStart();
@@ -384,7 +381,11 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         if (id == R.id.action_settings) {
             Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
             MainActivity.this.startActivity(myIntent);
-            finish();
+        }else{
+            if (id == R.id.action_about) {
+                Intent myIntent = new Intent(MainActivity.this, AboutActivity.class);
+                MainActivity.this.startActivity(myIntent);
+            }
         }
 
         return super.onOptionsItemSelected(item);
