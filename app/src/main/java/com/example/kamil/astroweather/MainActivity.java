@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -65,12 +66,46 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         SetUpViewPagerWithAdapter();
 
+        SetUpConstants();
+
         SetUpRefreshButton();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.performClick();
 
+        AttachSpinnerOnItemSelectedListener();
+
         ClockThreadStart();
+    }
+
+    private void SetUpConstants() {
+        mUnit = getIntent().getBooleanExtra("Units",true) ? YahooWeather.UNIT.CELSIUS : YahooWeather.UNIT.FAHRENHEIT;
+        if(mUnit == null)
+            mUnit = YahooWeather.UNIT.CELSIUS;
+        mCityName = getIntent().getStringExtra("City");
+        if(mCityName == null) {
+            Spinner spinner = (Spinner) findViewById(R.id.spinner);
+            mCityName = spinner != null ? spinner.getSelectedItem().toString() : "London";
+        }
+    }
+
+    private void AttachSpinnerOnItemSelectedListener() {
+        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        if (spinner != null) {
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    mCityName = spinner.getSelectedItem().toString();
+                    QueryForData();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    // your code here
+                }
+
+            });
+        }
     }
 
     private void ClockThreadStart() {
@@ -314,14 +349,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                         .setAction("Action", null).show();
             }
             YahooWeather yahooWeather = new YahooWeather();
-            mUnit = getIntent().getBooleanExtra("Units",true) ? YahooWeather.UNIT.CELSIUS : YahooWeather.UNIT.FAHRENHEIT;
-            if(mUnit == null)
-                mUnit = YahooWeather.UNIT.CELSIUS;
-            mCityName = getIntent().getStringExtra("City");
-            if(mCityName == null) {
-                Spinner spinner = (Spinner) findViewById(R.id.spinner);
-                mCityName = spinner != null ? spinner.getSelectedItem().toString() : "London";
-            }
             yahooWeather.queryYahooWeatherByPlaceName(getApplicationContext(), PolishSignsResolver.removePolishSignsFromText(mCityName), this);
         }
         else{
