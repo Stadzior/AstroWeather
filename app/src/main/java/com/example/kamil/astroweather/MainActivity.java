@@ -198,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if(weatherInfo != null) {
 
-
             RefreshTodayForecast(weatherInfo);
 
             RefreshNextFourDaysForecast(weatherInfo);
@@ -239,25 +238,37 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
     private void RefreshTodayForecast(WeatherInfo weatherInfo) {
         View fragmentView = currentPages.get("sunFragment").getView();
-        updateValueOnScreen(fragmentView, R.id.city, mCityName);
+
+        updateCurrentConditionIcon(fragmentView, R.id.currentIcon, weatherInfo.getCurrentConditionIconURL());
+        updateValueOnScreen(fragmentView, R.id.conditionsDesc, weatherInfo.getCurrentText());
+        updateValueOnScreen(fragmentView, R.id.city, mCityName + ", " + weatherInfo.getLocationCountry());
+
         char longitudeSign = weatherInfo.getConditionLon().contains("-") ? 'W' : 'E';
-        updateValueOnScreen(fragmentView, R.id.longitude, String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLon()))) + '°' + longitudeSign); //E-W
+        String fixedLongitude = String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLon()))) + '°' + longitudeSign;
+
         char latitudeSign = weatherInfo.getConditionLat().contains("-") ? 'N' : 'S';
-        updateValueOnScreen(fragmentView, R.id.latitude, String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLat()))) + '°' + latitudeSign); //N-S
+        String fixedLatitude = String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLat()))) + '°' + latitudeSign;
+
+        updateValueOnScreen(fragmentView, R.id.coordinates,fixedLongitude + " " + fixedLatitude);
+
         int temp = weatherInfo.getCurrentTemp();
         String formattedTemp = (mUnit == YahooWeather.UNIT.FAHRENHEIT) ? String.valueOf(temp) + "°F" : String.valueOf(YahooWeather.turnFtoC(temp)) + "°C";
+
         updateValueOnScreen(fragmentView, R.id.temperature, formattedTemp);
         updateValueOnScreen(fragmentView, R.id.preassure, weatherInfo.getAtmospherePressure() + "hPa");
-        updateValueOnScreen(fragmentView, R.id.conditionsDesc, weatherInfo.getCurrentText());
-        updateValueOnScreen(fragmentView, R.id.windDirection, GetWindDirectionDescription(Integer.valueOf(weatherInfo.getWindDirection())));
+
         double windSpeed = Double.valueOf(weatherInfo.getWindSpeed());
         String formattedWindSpeed = (mUnit == YahooWeather.UNIT.CELSIUS) ? String.valueOf(windSpeed) + "KM/H" : String.valueOf(TurnKMtoMile(windSpeed))+ "MPH";
-        updateValueOnScreen(fragmentView, R.id.windSpeed, formattedWindSpeed);
+        String formattedWind = formattedWindSpeed + " " + GetWindDirectionDescription(Integer.valueOf(weatherInfo.getWindDirection()));
+
+        updateValueOnScreen(fragmentView, R.id.wind, formattedWind);
+
         updateValueOnScreen(fragmentView, R.id.humidity, weatherInfo.getAtmosphereHumidity() + "%");
+
         double visibility = Double.valueOf(weatherInfo.getAtmosphereVisibility());
         String formattedVisibility = (mUnit == YahooWeather.UNIT.CELSIUS) ? String.valueOf(visibility) + "KM" : String.valueOf(TurnKMtoMile(visibility)) + "M";
+
         updateValueOnScreen(fragmentView, R.id.visibility, formattedVisibility);
-        updateCurrentConditionIcon(fragmentView, R.id.currentIcon, weatherInfo.getCurrentConditionIconURL());
     }
 
     private String GetWindDirectionDescription(int windDirection) {
@@ -353,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         }
         else{
             if (fab != null) {
-                Snackbar.make(fab, "There is no internet connection data can be deprecated.", Snackbar.LENGTH_LONG)
+                Snackbar.make(fab, "There is no internet connection. Data can be deprecated.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         }
