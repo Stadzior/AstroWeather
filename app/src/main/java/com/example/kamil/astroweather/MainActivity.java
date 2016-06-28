@@ -24,15 +24,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
@@ -44,13 +45,11 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
     private static SectionsPagerAdapter mSectionsPagerAdapter;
     public static HashMap<String,Fragment> currentPages;
-
     private static TextView clock;
-
     public static boolean isTablet;
-
     private static YahooWeather.UNIT mUnit;
     private static String mCityName;
+    private static DbManager dbManager;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,39 +57,50 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         setContentView(R.layout.activity_main);
 
         isTablet = determineIfIsTablet();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
 
         RestoreFragmentsStates(savedInstanceState);
-
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         SetUpViewPagerWithAdapter();
 
-        SetUpConstants();
-
         SetUpRefreshButton();
 
-        DbManager.SetUpDatabase();
+        SetUpDatabase("AstroWeather");
+
+        SetUpConstants();
 
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(spinner.getContext(),);
+        List<String> locations = new ArrayList<String>();
+
+        Cursor resultSet = dbManager.FetchColumn("Location", "Name");
+        if(resultSet.getCount()>0) {
+            resultSet.moveToFirst();
+            do {
+                locations.add(resultSet.getString(0));
+                resultSet.moveToNext();
+            } while(resultSet.getPosition()<3 && !resultSet.isAfterLast());
+            resultSet.close();
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_item,locations);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        if (spinner != null) {
+            spinner.setAdapter(adapter);
+        }
 
         AttachSpinnerOnItemSelectedListener(spinner);
 
-        Cursor resultSet = DbManager.FetchTableFromDatabase("Location","Name");
-        resultSet.moveToFirst();
-        for(int i = 0;i<3;i++){
-            spinner.setAdapter()
-                    resultSet.getString(0);
-            resultSet.moveToNext();
-        }
-        resultSet.close();
-
-
         ClockThreadStart();
+    }
+
+    private void SetUpDatabase(String dbName) {
+        dbManager = new DbManager();
+        dbManager.database = openOrCreateDatabase(dbName,MODE_PRIVATE, null);
+        dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS Location(Name VARCHAR);");
+        dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS LastSavedForecast(Name VARCHAR);");
     }
 
     private void SetUpConstants() {
@@ -98,11 +108,12 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         if(mUnit == null)
             mUnit = YahooWeather.UNIT.CELSIUS;
         mCityName = getIntent().getStringExtra("City");
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
         if(mCityName == null) {
-            Spinner spinner = (Spinner) findViewById(R.id.spinner);
-            mCityName = spinner != null ? spinner.getSelectedItem().toString() : "London";
+            mCityName = spinner != null ? spinner.getSelectedItem().toString() : "łódź";
+        }else{
+            dbManager.InsertInto("Location", "Name", mCityName);
         }
-        DbManager.InsertIntoDatabase("Locations","Name",mCityName);
     }
 
     private void AttachSpinnerOnItemSelectedListener(final Spinner spinner) {
