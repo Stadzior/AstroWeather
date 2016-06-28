@@ -50,10 +50,8 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     private static YahooWeather.UNIT mUnit;
     private static String mCityName;
     private static DbManager dbManager;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         isTablet = determineIfIsTablet();
@@ -73,6 +71,14 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         SetUpConstants();
 
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        SetUpSpinnerItems(spinner);
+        AttachSpinnerOnItemSelectedListener(spinner);
+
+        ClockThreadStart();
+
+    }
+
+    private void SetUpSpinnerItems(Spinner spinner) {
         List<String> locations = new ArrayList<String>();
 
         Cursor resultSet = dbManager.FetchColumn("Location", "Name");
@@ -90,10 +96,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         if (spinner != null) {
             spinner.setAdapter(adapter);
         }
-
-        AttachSpinnerOnItemSelectedListener(spinner);
-
-        ClockThreadStart();
     }
 
     private void SetUpDatabase(String dbName) {
@@ -121,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                    mCityName = spinner.getSelectedItem().toString();
-                    QueryForData();
+                    //mCityName = spinner.getSelectedItem().toString();
+                    //QueryForData();
                 }
 
                 @Override
@@ -268,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         updateCurrentConditionIcon(fragmentView, R.id.currentIcon, weatherInfo.getCurrentConditionIconURL());
         updateValueOnScreen(fragmentView, R.id.conditionsDesc, weatherInfo.getCurrentText());
-        updateValueOnScreen(fragmentView, R.id.city, mCityName + ", " + weatherInfo.getLocationCountry());
+        updateValueOnScreen(fragmentView, R.id.city, mCityName.substring(0,mCityName.indexOf(' ')) + ",\n" + weatherInfo.getLocationCountry());
 
         char longitudeSign = weatherInfo.getConditionLon().contains("-") ? 'W' : 'E';
         String fixedLongitude = String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLon()))) + '°' + longitudeSign;

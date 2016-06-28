@@ -35,7 +35,7 @@
                 android:id="@+id/city"
                 android:layout_column="2"
                 android:layout_gravity="center_vertical"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textIsSelectable="false"
                 android:text="@string/city"
                 android:layout_marginRight="15dp" />
