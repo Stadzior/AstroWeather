@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 import zh.wang.android.apis.yweathergetter4a.YahooWeather;
@@ -92,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         weatherInfo.setCityName(getStringCellValue(resultSet, "CityName"));
         weatherInfo.setCountryName(getStringCellValue(resultSet, "CountryName"));
+        weatherInfo.setCurrentConditionIconURL(getStringCellValue(resultSet, "CurrentConditionIconURL"));
+        weatherInfo.setCurrentText(getStringCellValue(resultSet, "CurrentConditionText"));
         weatherInfo.setTemperature(getStringCellValue(resultSet, "Temperature"));
         weatherInfo.setPressure(getStringCellValue(resultSet, "Pressure"));
         weatherInfo.setWindSpeed(getStringCellValue(resultSet, "WindSpeed"));
@@ -116,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 getStringCellValue(resultSet,"ForecastDay5")
                 , getStringCellValue(resultSet, "ForecastIconURL5")
                 , getStringCellValue(resultSet, "ForecastDesc5"));
+        weatherInfo.setExpirationDate(System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(15));
         }
         return weatherInfo;
     }
@@ -151,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     private void SetUpDatabase(String dbName) {
         dbManager = new DbManager();
         dbManager.database = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+        dbManager.database.execSQL("DROP TABLE WeatherInfo");
         dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS Location (Name VARCHAR)");
         StringBuilder builder = new StringBuilder("CREATE TABLE IF NOT EXISTS WeatherInfo (");
         builder.append("CityName VARCHAR,");
@@ -176,7 +181,8 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         builder.append("ForecastDesc4 VARCHAR,");
         builder.append("ForecastDay5 VARCHAR,");
         builder.append("ForecastIconURL5 VARCHAR,");
-        builder.append("ForecastDesc5 VARCHAR");
+        builder.append("ForecastDesc5 VARCHAR,");
+        builder.append("ExpirationDate VARCHAR");
         builder.append(");");
         dbManager.database.execSQL(builder.toString());
     }
@@ -208,10 +214,10 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                     mCityName = spinner.getSelectedItem().toString();
                     AdjustableWeatherInfo data = GetStoredWeatherInfo();
-                    if(data == null || data.getLocationCity().compareTo(mCityName)!=0){
+                    if(data == null || data.getLocationCity().compareTo(mCityName)!=0 || data.IsExpired()){
                         QueryForData();
                     }else{
-                        QueryForData();//RefreshData(data);
+                        RefreshData(data);
                     }
                 }
 
@@ -248,6 +254,18 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             }
         };
         clockThread.start();
+
+        // Setup handler for uncaught exceptions.
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable e) {
+                handleUncaughtException(thread, e);
+            }
+        });
+    }
+
+    private void handleUncaughtException(Thread thread, Throwable e) {
+        e.printStackTrace();
     }
 
     private void SetUpRefreshButton() {
@@ -256,7 +274,12 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    QueryForData();
+                    AdjustableWeatherInfo data = GetStoredWeatherInfo();
+                    if(data == null || data.getLocationCity().compareTo(mCityName)!=0 || data.IsExpired()){
+                        QueryForData();
+                    }else{
+                        RefreshData(data);
+                    }
                 }
             });
         }
@@ -357,7 +380,8 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         values.add(weatherInfo.getForecastInfo5().getForecastDay());
         values.add(weatherInfo.getForecastInfo5().getForecastConditionIconURL());
         values.add(weatherInfo.getForecastInfo5().getForecastText());
-        dbManager.InsertInto("WeatherInfo",columns,values);
+        values.add(String.valueOf(System.currentTimeMillis()));
+        dbManager.InsertInto("WeatherInfo", columns, values);
     }
 
     private void RefreshData(WeatherInfo weatherInfo) {
@@ -371,6 +395,12 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         if(weatherInfo!=null) {
             RefreshTodayForecast(weatherInfo);
             RefreshNextFourDaysForecast(weatherInfo);
+
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            if (fab != null) {
+                Snackbar.make(fab, "Restored data from memory.", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
         }
     }
 
@@ -520,7 +550,13 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 throw new IllegalArgumentException("Something went wrong with downloading current condition icon.");
             }
             try {
-                return BitmapFactory.decodeStream(urls[0].openConnection().getInputStream());
+                if(urls[0] != null)
+                {
+                    return BitmapFactory.decodeStream(urls[0].openConnection().getInputStream());
+                }
+                else{
+                    return null;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

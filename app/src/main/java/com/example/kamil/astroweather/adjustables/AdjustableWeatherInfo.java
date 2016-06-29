@@ -59,4 +59,33 @@ public class AdjustableWeatherInfo extends WeatherInfo {
         if(forecasts.size()<MAX_SIZE)
             forecasts.add(new AdjustableForecastInfo(day,url,desc));
     }
+
+    private String currentConditionIconURL;
+
+    @Override
+    public String getCurrentConditionIconURL() {
+        return currentConditionIconURL;
+    }
+
+    public void setCurrentConditionIconURL(String currentConditionIconURL) {
+        this.currentConditionIconURL = currentConditionIconURL;
+    }
+
+    public void setCurrentText(String text){
+        super.setCurrentText(text);
+    }
+
+    private long expirationDate;
+
+    public boolean IsExpired() {
+        return getExpirationDate()<System.currentTimeMillis();
+    }
+
+    public long getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(long expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 }
