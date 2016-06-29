@@ -12,7 +12,7 @@ public class DbManager {
         database.execSQL("INSERT INTO " + tableName + " (" + columnName + ") VALUES ('" + value + "');");
     }
 
-    public void InsertInto(String tableName,ArrayList<String> columns,ArrayList<String> values){
+    public void InsertInto(String tableName,String[] columns,ArrayList<String> values){
         StringBuilder query = new StringBuilder("INSERT INTO ").append(tableName).append(" (");
         for(String columnName : columns){
             query.append(columnName).append(",");
@@ -37,12 +37,8 @@ public class DbManager {
         return database.rawQuery("Select * from "+tableName,null);
     }
 
-    public ArrayList<String> FetchColumnNames(String tableName) {
+    public String[] FetchColumnNames(String tableName) {
         Cursor resultSet = FetchTable(tableName);
-        ArrayList<String> columns = new ArrayList<>();
-        for(int i = 0;i<resultSet.getColumnCount();i++){
-            columns.add(resultSet.getColumnName(i));
-        }
-        return columns;
+        return resultSet.getColumnNames();
     }
 }

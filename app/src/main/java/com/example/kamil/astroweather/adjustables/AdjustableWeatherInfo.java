@@ -1,10 +1,15 @@
-package com.example.kamil.astroweather;
+package com.example.kamil.astroweather.adjustables;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 
 public class AdjustableWeatherInfo extends WeatherInfo {
 
-    void setTemperature(String temperature){
+    private static final int MAX_SIZE = 4;
+
+    public void setTemperature(String temperature){
         super.setCurrentTemp(Integer.valueOf(temperature));
     }
 
@@ -42,5 +47,16 @@ public class AdjustableWeatherInfo extends WeatherInfo {
 
     public void setCountryName(String countryName) {
     super.setLocationCountry(countryName);
+    }
+
+    public List<AdjustableForecastInfo> forecasts;
+
+    public AdjustableWeatherInfo(){
+        forecasts = new ArrayList<>(MAX_SIZE);
+    }
+
+    public void addForecast(String day,String url,String desc){
+        if(forecasts.size()<MAX_SIZE)
+            forecasts.add(new AdjustableForecastInfo(day,url,desc));
     }
 }

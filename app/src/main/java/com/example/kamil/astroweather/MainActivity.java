@@ -26,6 +26,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.kamil.astroweather.adjustables.AdjustableWeatherInfo;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
     }
 
-  private WeatherInfo GetStoredWeatherInfo() {
+  private AdjustableWeatherInfo GetStoredWeatherInfo() {
         Cursor resultSet = dbManager.FetchTable("WeatherInfo");
         AdjustableWeatherInfo weatherInfo = null;
         if(resultSet != null && resultSet.getCount()>0){
@@ -97,23 +99,22 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         weatherInfo.setLatitude(getStringCellValue(resultSet, "Latitude"));
         weatherInfo.setHumidity(resultSet.getString(resultSet.getColumnIndex("Humidity")));
         weatherInfo.setVisibility(resultSet.getString(resultSet.getColumnIndex("Visibility")));
-//        weatherInfo.setForecastInfo2(
-//                (getStringCellValue(resultSet, "ForecastDay2"))
-//                , ()
-//                , (getStringCellValue(resultSet, "ForecastIconURL2"))
-//                , (getStringCellValue(resultSet, "ForecastDesc2")));
-//        weatherInfo.setForecastInfo3(
-//                (getStringCellValue(resultSet, "ForecastDay3"))
-//                , (getStringCellValue(resultSet, "ForecastIconURL3"))
-//                , (getStringCellValue(resultSet, "ForecastDesc3")));
-//        weatherInfo.setForecastInfo4(
-//                (getStringCellValue(resultSet, "ForecastDay4"))
-//                , (getStringCellValue(resultSet, "ForecastIconURL4"))
-//                , (getStringCellValue(resultSet, "ForecastDesc4")));
-//        weatherInfo.setForecastInfo5(
-//                (getStringCellValue(resultSet, "ForecastDay5"))
-//                , (getStringCellValue(resultSet, "ForecastIconURL5"))
-//                , (getStringCellValue(resultSet, "ForecastDesc5")));
+        weatherInfo.addForecast(
+                getStringCellValue(resultSet, "ForecastDay2")
+                , getStringCellValue(resultSet, "ForecastIconURL2")
+                , getStringCellValue(resultSet, "ForecastDesc2"));
+        weatherInfo.addForecast(
+                getStringCellValue(resultSet,"ForecastDay3")
+                , getStringCellValue(resultSet, "ForecastIconURL3")
+                , getStringCellValue(resultSet, "ForecastDesc3"));
+        weatherInfo.addForecast(
+                getStringCellValue(resultSet,"ForecastDay3")
+                , getStringCellValue(resultSet, "ForecastIconURL3")
+                , getStringCellValue(resultSet, "ForecastDesc3"));
+        weatherInfo.addForecast(
+                getStringCellValue(resultSet,"ForecastDay3")
+                , getStringCellValue(resultSet, "ForecastIconURL3")
+                , getStringCellValue(resultSet, "ForecastDesc3"));
         }
         return weatherInfo;
     }
@@ -149,8 +150,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     private void SetUpDatabase(String dbName) {
         dbManager = new DbManager();
         dbManager.database = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
-        dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS Location(Name VARCHAR);");
-        //dbManager.database.execSQL("DROP TABLE IF EXISTS WeatherInfo;"); //TODO do wyyebanya
+        dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS Location (Name VARCHAR)");
         StringBuilder builder = new StringBuilder("CREATE TABLE IF NOT EXISTS WeatherInfo (");
         builder.append("CityName VARCHAR,");
         builder.append("CountryName VARCHAR,");
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         builder.append("Temperature VARCHAR,");
         builder.append("Pressure VARCHAR,");
         builder.append("WindSpeed VARCHAR,");
-        builder.append("WindDirection VARCHAR");
+        builder.append("WindDirection VARCHAR,");
         builder.append("Humidity VARCHAR,");
         builder.append("Visibility VARCHAR,");
         builder.append("ForecastDay2 VARCHAR,");
@@ -308,7 +308,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     public void gotWeatherInfo(WeatherInfo weatherInfo) {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if(weatherInfo != null) {
-
             RefreshData(weatherInfo);
             StoreDataInDatabase(weatherInfo);
             if (fab != null) {
@@ -327,19 +326,20 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     }
 
     private void StoreDataInDatabase(WeatherInfo weatherInfo) {
-        ArrayList<String> columns = dbManager.FetchColumnNames("WeatherInfo");
+        String[] columns = dbManager.FetchColumnNames("WeatherInfo");
         ArrayList<String> values = new ArrayList<>();
         values.add(weatherInfo.getLocationCity());
         values.add(weatherInfo.getLocationCountry());
         values.add(weatherInfo.getCurrentText());
         values.add(weatherInfo.getCurrentConditionIconURL());
+        values.add(weatherInfo.getConditionLon());
+        values.add(weatherInfo.getConditionLat());
         values.add(String.valueOf(weatherInfo.getCurrentTemp()));
         values.add(weatherInfo.getAtmospherePressure());
         values.add(weatherInfo.getWindSpeed());
         values.add(weatherInfo.getWindDirection());
         values.add(weatherInfo.getAtmosphereHumidity());
         values.add(weatherInfo.getAtmosphereVisibility());
-        values.add(weatherInfo.getAtmospherePressure());
         values.add(weatherInfo.getForecastInfo2().getForecastDay());
         values.add(weatherInfo.getForecastInfo2().getForecastConditionIconURL());
         values.add(weatherInfo.getForecastInfo2().getForecastText());
@@ -356,6 +356,13 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     }
 
     private void RefreshData(WeatherInfo weatherInfo) {
+        if(weatherInfo!=null) {
+            RefreshTodayForecast(weatherInfo);
+            RefreshNextFourDaysForecast(weatherInfo);
+        }
+    }
+
+    private void RefreshData(AdjustableWeatherInfo weatherInfo) {
         if(weatherInfo!=null) {
             RefreshTodayForecast(weatherInfo);
             RefreshNextFourDaysForecast(weatherInfo);
@@ -379,6 +386,25 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         updateValueOnScreen(fragmentView, R.id.forecastDay4, weatherInfo.getForecastInfo5().getForecastDay());
         updateCurrentConditionIcon(fragmentView, R.id.forecastIcon4, weatherInfo.getForecastInfo5().getForecastConditionIconURL());
         updateValueOnScreen(fragmentView, R.id.forecastDesc4, weatherInfo.getForecastInfo5().getForecastText());
+    }
+
+    private void RefreshNextFourDaysForecast(AdjustableWeatherInfo weatherInfo) {
+        View fragmentView = currentPages.get("moonFragment").getView();
+        updateValueOnScreen(fragmentView, R.id.forecastDay1, weatherInfo.forecasts.get(0).getForecastDay());
+        updateCurrentConditionIcon(fragmentView, R.id.forecastIcon1, weatherInfo.forecasts.get(0).getForecastConditionIconURL());
+        updateValueOnScreen(fragmentView, R.id.forecastDesc1,weatherInfo.forecasts.get(0).getForecastText());
+
+        updateValueOnScreen(fragmentView, R.id.forecastDay2, weatherInfo.forecasts.get(1).getForecastDay());
+        updateCurrentConditionIcon(fragmentView, R.id.forecastIcon2, weatherInfo.forecasts.get(1).getForecastConditionIconURL());
+        updateValueOnScreen(fragmentView, R.id.forecastDesc2,weatherInfo.forecasts.get(1).getForecastText());
+
+        updateValueOnScreen(fragmentView, R.id.forecastDay3, weatherInfo.forecasts.get(2).getForecastDay());
+        updateCurrentConditionIcon(fragmentView, R.id.forecastIcon3, weatherInfo.forecasts.get(2).getForecastConditionIconURL());
+        updateValueOnScreen(fragmentView, R.id.forecastDesc3,weatherInfo.forecasts.get(2).getForecastText());
+
+        updateValueOnScreen(fragmentView, R.id.forecastDay4, weatherInfo.forecasts.get(3).getForecastDay());
+        updateCurrentConditionIcon(fragmentView, R.id.forecastIcon4, weatherInfo.forecasts.get(3).getForecastConditionIconURL());
+        updateValueOnScreen(fragmentView, R.id.forecastDesc4, weatherInfo.forecasts.get(3).getForecastText());
     }
 
     private void RefreshTodayForecast(WeatherInfo weatherInfo) {
