@@ -7,7 +7,24 @@ public class DbManager {
     public SQLiteDatabase database;
 
     public void InsertInto(String tableName,String columnName,String value){
-        database.execSQL("INSERT INTO "+ tableName + " (" + columnName + ") VALUES ('" + value + "');");
+        database.execSQL("INSERT INTO " + tableName + " (" + columnName + ") VALUES ('" + value + "');");
+    }
+
+    public void InsertInto(String tableName,String[] columns,String[] values){
+        StringBuilder query = new StringBuilder("INSERT INTO ").append(tableName).append(" (");
+        for(String columnName : columns){
+            query.append(columnName).append(",");
+        }
+
+        query.deleteCharAt(query.length()-1).append(") VALUES (");
+
+        for(String value : values){
+            query.append("'").append(value).append("',");
+        }
+
+        query.deleteCharAt(query.length()-1).append(");");
+
+        database.execSQL(query.toString());
     }
 
     public Cursor FetchColumn(String tableName, String columnName) {

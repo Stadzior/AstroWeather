@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         weatherInfo.setCityName(getStringCellValue(resultSet, "CityName"));
         weatherInfo.setCountryName(getStringCellValue(resultSet, "CountryName"));
-        weatherInfo.setTemperature(getIntCellValue(resultSet, "Temperature"));
+        weatherInfo.setTemperature(getStringCellValue(resultSet, "Temperature"));
         weatherInfo.setPressure(getStringCellValue(resultSet, "Pressure"));
         weatherInfo.setWindSpeed(getStringCellValue(resultSet, "WindSpeed"));
         weatherInfo.setWindDirection(getStringCellValue(resultSet, "WindDirection"));
@@ -120,10 +120,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
     private String getStringCellValue(Cursor resultSet,String columnName){
         return resultSet.getString(resultSet.getColumnIndex(columnName));
-    }
-
-    private int getIntCellValue(Cursor resultSet,String columnName){
-        return resultSet.getInt(resultSet.getColumnIndex(columnName));
     }
 
     private void SetUpSpinnerItems(Spinner spinner) {
@@ -161,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         builder.append("CurrentConditionIconURL VARCHAR,");
         builder.append("Longitude VARCHAR,");
         builder.append("Latitude VARCHAR,");
-        builder.append("Temperature INT,");
+        builder.append("Temperature VARCHAR,");
         builder.append("Pressure VARCHAR,");
         builder.append("WindSpeed VARCHAR,");
         builder.append("WindDirection VARCHAR");
@@ -329,7 +325,9 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     }
 
     private void StoreDataInDatabase(WeatherInfo weatherInfo) {
-
+        String[] columns = {"CityName","CountryName"}; // TODO DOKONCZYC LISTE
+        String[] values = {"hue","hue"};
+        dbManager.InsertInto("WeatherInfo",columns,values);
     }
 
     private void RefreshData(WeatherInfo weatherInfo) {
