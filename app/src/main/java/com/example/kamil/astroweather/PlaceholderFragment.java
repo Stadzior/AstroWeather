@@ -29,21 +29,12 @@ public class PlaceholderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView;
-
-        if(MainActivity.isTablet){
-            rootView = inflater.inflate(R.layout.fragment_common, container, false);
-            //MainActivity.refreshSunValues(rootView);
-            //MainActivity.refreshMoonValues(rootView);
-        }else{
             if(mPosition == 0){
                 rootView = inflater.inflate(R.layout.fragment_sun, container, false);
-                //MainActivity.refreshSunValues(rootView);
             }
             else{
                 rootView = inflater.inflate(R.layout.fragment_moon, container, false);
-                //MainActivity.refreshMoonValues(rootView);
             }
-        }
 
         return rootView;
     }

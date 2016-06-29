@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         setSupportActionBar(toolbar);
 
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         SetUpViewPagerWithAdapter();
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     private void SetUpDatabase(String dbName) {
         dbManager = new DbManager();
         dbManager.database = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
-        dbManager.database.execSQL("DROP TABLE WeatherInfo");
+        //dbManager.database.execSQL("DROP TABLE WeatherInfo");
         dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS Location (Name VARCHAR)");
         StringBuilder builder = new StringBuilder("CREATE TABLE IF NOT EXISTS WeatherInfo (");
         builder.append("CityName VARCHAR,");
@@ -405,7 +406,8 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     }
 
     private void RefreshNextFourDaysForecast(WeatherInfo weatherInfo) {
-        View fragmentView = currentPages.get("moonFragment").getView();
+        String fragmentName = isTablet ? "sunFragment" : "moonFragment";
+        View fragmentView = currentPages.get(fragmentName).getView();
         updateValueOnScreen(fragmentView, R.id.forecastDay1, weatherInfo.getForecastInfo2().getForecastDay());
         updateCurrentConditionIcon(fragmentView, R.id.forecastIcon1, weatherInfo.getForecastInfo2().getForecastConditionIconURL());
         updateValueOnScreen(fragmentView, R.id.forecastDesc1,weatherInfo.getForecastInfo2().getForecastText());
@@ -424,7 +426,8 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     }
 
     private void RefreshNextFourDaysForecast(AdjustableWeatherInfo weatherInfo) {
-        View fragmentView = currentPages.get("moonFragment").getView();
+        String fragmentName = isTablet ? "sunFragment" : "moonFragment";
+        View fragmentView = currentPages.get(fragmentName).getView();
         updateValueOnScreen(fragmentView, R.id.forecastDay1, weatherInfo.forecasts.get(0).getForecastDay());
         updateCurrentConditionIcon(fragmentView, R.id.forecastIcon1, weatherInfo.forecasts.get(0).getForecastConditionIconURL());
         updateValueOnScreen(fragmentView, R.id.forecastDesc1,weatherInfo.forecasts.get(0).getForecastText());
@@ -446,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         View fragmentView = currentPages.get("sunFragment").getView();
 
         updateCurrentConditionIcon(fragmentView, R.id.currentIcon, weatherInfo.getCurrentConditionIconURL());
-        updateValueOnScreen(fragmentView, R.id.conditionsDesc, weatherInfo.getCurrentText());
+        updateValueOnScreen(fragmentView, R.id.conditionsDesc, weatherInfo.getCurrentText().replace(" ","\n"));
 
         String cityAndCountry = mCityName.contains(" ") ? mCityName.substring(0,mCityName.indexOf(' ')) : mCityName;
         cityAndCountry += ",\n"+ weatherInfo.getLocationCountry();
