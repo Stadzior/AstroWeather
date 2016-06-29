@@ -11,14 +11,8 @@
         <item>Imperial</item>
     </string-array>
 
-    <string-array name="favourite_locations">
-        <item>łódź</item>
-        <item>kraków</item>
-        <item>szczebrzeszyn</item>
-    </string-array>
-
-    <string name="pref_longitude">Location</string>
-    <string name="pref_directions">Units</string>
+    <string name="location">Location</string>
+    <string name="units">Units</string>
     <string name="sunrise">Sunrise</string>
     <string name="dawn">Dawn</string>
     <string name="twilight">Twilight</string>
@@ -53,5 +47,6 @@
     <string name="W">W:</string>
     <string name="H">H:</string>
     <string name="V">V:</string>
+    <string name="AddFavourite">Add favourite</string>
 
 </resources>

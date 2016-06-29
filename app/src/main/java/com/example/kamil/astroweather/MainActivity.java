@@ -79,18 +79,22 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     }
 
     private void SetUpSpinnerItems(Spinner spinner) {
-        List<String> locations = new ArrayList<String>();
+        List<String> locations = new ArrayList<>();
 
         Cursor resultSet = dbManager.FetchColumn("Location", "Name");
         if(resultSet.getCount()>0) {
-            resultSet.moveToFirst();
+            String locationName;
+            resultSet.moveToLast();
             do {
-                locations.add(resultSet.getString(0));
-                resultSet.moveToNext();
-            } while(resultSet.getPosition()<3 && !resultSet.isAfterLast());
+                locationName = resultSet.getString(0);
+                if(!locations.contains(locationName)) {
+                    locations.add(resultSet.getString(0));
+                }
+                resultSet.moveToPrevious();
+            } while(!resultSet.isBeforeFirst());
             resultSet.close();
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_item,locations);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, locations);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         if (spinner != null) {
@@ -100,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
     private void SetUpDatabase(String dbName) {
         dbManager = new DbManager();
-        dbManager.database = openOrCreateDatabase(dbName,MODE_PRIVATE, null);
+        dbManager.database = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
         dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS Location(Name VARCHAR);");
         dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS LastSavedForecast(Name VARCHAR);");
     }
@@ -112,8 +116,14 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         mCityName = getIntent().getStringExtra("City");
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         if(mCityName == null) {
-            mCityName = spinner != null ? spinner.getSelectedItem().toString() : "łódź";
-        }else{
+            if(spinner != null && spinner.getSelectedItem() != null){
+                mCityName = spinner != null ? spinner.getSelectedItem().toString() : "łódź";
+            }
+            else{
+                mCityName = "";
+            }
+        }
+        else{
             dbManager.InsertInto("Location", "Name", mCityName);
         }
     }
@@ -123,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                    //mCityName = spinner.getSelectedItem().toString();
+                    mCityName = spinner.getSelectedItem().toString();
                     //QueryForData();
                 }
 
@@ -270,7 +280,10 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         updateCurrentConditionIcon(fragmentView, R.id.currentIcon, weatherInfo.getCurrentConditionIconURL());
         updateValueOnScreen(fragmentView, R.id.conditionsDesc, weatherInfo.getCurrentText());
-        updateValueOnScreen(fragmentView, R.id.city, mCityName.substring(0,mCityName.indexOf(' ')) + ",\n" + weatherInfo.getLocationCountry());
+
+        String cityAndCountry = mCityName.contains(" ") ? mCityName.substring(0,mCityName.indexOf(' ')) : mCityName;
+        cityAndCountry += ",\n"+ weatherInfo.getLocationCountry();
+        updateValueOnScreen(fragmentView, R.id.city,cityAndCountry);
 
         char longitudeSign = weatherInfo.getConditionLon().contains("-") ? 'W' : 'E';
         String fixedLongitude = String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLon()))) + '°' + longitudeSign;

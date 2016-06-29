@@ -13,13 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/appbar_padding_top"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:background="#af4f4f">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="#af4f4f"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay">
         </android.support.v7.widget.Toolbar>
@@ -34,8 +35,7 @@
                 android:id="@+id/spinner"
                 android:textAlignment="textEnd"
                 android:layout_gravity="end"
-                android:layout_weight="1"
-                android:entries="@array/favourite_locations" />
+                android:layout_weight="1" />
         </LinearLayout>
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"

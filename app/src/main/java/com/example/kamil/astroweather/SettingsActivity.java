@@ -171,8 +171,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_data_sync);
             setHasOptionsMenu(true);
-
         }
+
+
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
@@ -190,11 +191,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            //NavUtils.navigateUpFromSameTask(this);
 
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
             Intent intentWithSettings = new Intent(SettingsActivity.this, MainActivity.class)
-                    .putExtra("City",settings.getString("CityName","London"))
+                    .putExtra("City",settings.getString("CityName","łódź"))
                     .putExtra("Units",settings.getString("Units","Metric").compareTo("Metric") == 0);
             startActivity(intentWithSettings);
             finish();
