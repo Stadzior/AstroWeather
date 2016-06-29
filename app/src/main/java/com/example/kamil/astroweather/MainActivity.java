@@ -46,12 +46,14 @@ import zh.wang.android.apis.yweathergetter4a.YahooWeatherInfoListener;
 public class MainActivity extends AppCompatActivity implements YahooWeatherInfoListener {
 
     private static SectionsPagerAdapter mSectionsPagerAdapter;
+    private static ViewPager mViewPager;
     public static HashMap<String,Fragment> currentPages;
     private static TextView clock;
     public static boolean isTablet;
     private static YahooWeather.UNIT mUnit;
     private static String mCityName;
     private static DbManager dbManager;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -61,18 +63,17 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         setSupportActionBar(toolbar);
 
-        RestoreFragmentsStates(savedInstanceState);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         SetUpViewPagerWithAdapter();
+
+        RestoreFragmentsStates(savedInstanceState);
 
         SetUpRefreshButton();
 
         SetUpDatabase("AstroWeather");
 
         SetUpConstants();
-
-        RefreshData(GetStoredWeatherInfo());
 
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
         SetUpSpinnerItems(spinner);
@@ -108,13 +109,13 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 , getStringCellValue(resultSet, "ForecastIconURL3")
                 , getStringCellValue(resultSet, "ForecastDesc3"));
         weatherInfo.addForecast(
-                getStringCellValue(resultSet,"ForecastDay3")
-                , getStringCellValue(resultSet, "ForecastIconURL3")
-                , getStringCellValue(resultSet, "ForecastDesc3"));
+                getStringCellValue(resultSet,"ForecastDay4")
+                , getStringCellValue(resultSet, "ForecastIconURL4")
+                , getStringCellValue(resultSet, "ForecastDesc4"));
         weatherInfo.addForecast(
-                getStringCellValue(resultSet,"ForecastDay3")
-                , getStringCellValue(resultSet, "ForecastIconURL3")
-                , getStringCellValue(resultSet, "ForecastDesc3"));
+                getStringCellValue(resultSet,"ForecastDay5")
+                , getStringCellValue(resultSet, "ForecastIconURL5")
+                , getStringCellValue(resultSet, "ForecastDesc5"));
         }
         return weatherInfo;
     }
@@ -206,7 +207,12 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 @Override
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                     mCityName = spinner.getSelectedItem().toString();
-                    //QueryForData();
+                    AdjustableWeatherInfo data = GetStoredWeatherInfo();
+                    if(data == null || data.getLocationCity().compareTo(mCityName)!=0){
+                        QueryForData();
+                    }else{
+                        QueryForData();//RefreshData(data);
+                    }
                 }
 
                 @Override
@@ -260,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         /*
       The {@link ViewPager} that will host the section contents.
      */
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.container);
         if (mViewPager != null) {
             mViewPager.setAdapter(mSectionsPagerAdapter);
         }
@@ -279,7 +285,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             } else {
                 currentPages.put("sunFragment", getSupportFragmentManager().getFragment(savedInstanceState, "sunFragment"));
                 currentPages.put("moonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "moonFragment"));
-
             }
         }
     }
@@ -328,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     private void StoreDataInDatabase(WeatherInfo weatherInfo) {
         String[] columns = dbManager.FetchColumnNames("WeatherInfo");
         ArrayList<String> values = new ArrayList<>();
-        values.add(weatherInfo.getLocationCity());
+        values.add(mCityName);
         values.add(weatherInfo.getLocationCountry());
         values.add(weatherInfo.getCurrentText());
         values.add(weatherInfo.getCurrentConditionIconURL());
@@ -521,9 +526,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             }
             return null;
         }
-
     }
-
 
     public void QueryForData(){
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
