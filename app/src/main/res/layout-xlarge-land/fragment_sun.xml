@@ -8,184 +8,377 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$PlaceholderFragment">
 
-    <TableLayout
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_height="match_parent">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="30dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/city"
-                android:layout_column="1"
-                android:layout_gravity="center_vertical"
-                android:textIsSelectable="false"
-                android:text="@string/city"
-                android:layout_marginRight="15dp"
-                android:textSize="20sp" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                android:id="@+id/temperatureLabel"
-                android:layout_column="2"
-                android:layout_gravity="center_vertical"
-                android:text="@string/T"
-                android:textColor="#000000"
-                android:layout_marginRight="15dp"
-                android:textSize="20sp" />
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/currentIcon"
+                    android:layout_column="1"
+                    android:contentDescription="@string/sunrise"
+                    android:layout_marginRight="30dp"
+                    android:src="@drawable/full" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:id="@+id/temperature"
-                android:layout_column="4"
-                android:text="@string/noughtPointNoughtNought"
-                android:layout_gravity="center_vertical"
-                android:textSize="20sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/city"
+                    android:layout_column="2"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp"
+                    android:textIsSelectable="false"
+                    android:text="@string/city"
+                    android:layout_marginRight="15dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                android:id="@+id/humidityLabel"
-                android:layout_column="5"
-                android:layout_gravity="center_vertical"
-                android:text="@string/H"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:textSize="20sp" />
+            </TableRow>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:text="@string/noughtPointNoughtNought"
-                android:id="@+id/humidity"
-                android:layout_column="7"
-                android:layout_gravity="center_vertical"
-                android:textSize="20sp" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        </TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/conditionsDesc"
+                    android:layout_column="1"
+                    android:text="@string/Description"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="50sp" />
+            </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <ImageView
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:id="@+id/currentIcon"
-                android:layout_column="1"
-                android:contentDescription="@string/sunrise"
-                android:layout_marginRight="30dp"
-                android:src="@drawable/full"
-                android:layout_gravity="center_vertical" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:text="@string/coords"
+                    android:id="@+id/coordinatesLabel"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp"
+                    android:layout_marginRight="15dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                android:id="@+id/preassureLabel"
-                android:layout_column="2"
-                android:layout_gravity="center_vertical"
-                android:text="@string/P"
-                android:layout_marginRight="15dp"
-                android:textSize="20sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:text="@string/noughtPointNoughtNought"
+                    android:id="@+id/coordinates"
+                    android:layout_column="2"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp" />
+            </TableRow>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:id="@+id/preassure"
-                android:layout_column="4"
-                android:layout_gravity="center_vertical"
-                android:text="@string/noughtPointNoughtNought"
-                android:textSize="20sp" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                android:id="@+id/visibilityLabel"
-                android:layout_column="5"
-                android:layout_gravity="center_vertical"
-                android:text="@string/V"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:textSize="20sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:id="@+id/temperatureLabel"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp"
+                    android:text="@string/temp"
+                    android:textColor="#000000"
+                    android:layout_marginRight="15dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:text="@string/noughtPointNoughtNought"
-                android:id="@+id/visibility"
-                android:layout_column="7"
-                android:layout_gravity="center_vertical"
-                android:textSize="20sp" />
-        </TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:id="@+id/temperature"
+                    android:layout_column="0"
+                    android:text="@string/noughtPointNoughtNought"
+                    android:textSize="50sp"
+                    android:layout_gravity="center_vertical" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            </TableRow>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/conditionsDesc"
-                android:layout_column="1"
-                android:text="@string/Description"
-                android:layout_gravity="center_vertical"
-                android:textSize="20sp"
-                android:layout_marginRight="15dp" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                android:id="@+id/windLabel"
-                android:layout_column="2"
-                android:text="@string/W"
-                android:textSize="20sp"
-                android:layout_marginRight="15dp"
-                android:layout_gravity="center_vertical" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:id="@+id/pressureLabel"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp"
+                    android:text="@string/pressure"
+                    android:layout_marginRight="15dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:id="@+id/wind"
-                android:layout_column="4"
-                android:text="@string/noughtPointNoughtNought"
-                android:textSize="20sp"
-                android:layout_gravity="center_vertical" />
-        </TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:id="@+id/preassure"
+                    android:layout_column="2"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp"
+                    android:text="@string/noughtPointNoughtNought" />
+            </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:text="@string/noughtPointNoughtNought"
-                android:id="@+id/coordinates"
-                android:layout_column="1"
-                android:layout_gravity="center_vertical"
-                android:textSize="20sp" />
-        </TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:id="@+id/windLabel"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp"
+                    android:text="@string/wind"
+                    android:layout_marginRight="15dp" />
 
-    </TableLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:id="@+id/wind"
+                    android:layout_column="2"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp"
+                    android:text="@string/noughtPointNoughtNought" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:id="@+id/humidityLabel"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp"
+                    android:text="@string/humidity"
+                    android:layout_marginRight="15dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:text="@string/noughtPointNoughtNought"
+                    android:id="@+id/humidity"
+                    android:layout_column="2"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:id="@+id/visibilityLabel"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp"
+                    android:text="@string/visibility"
+                    android:layout_marginRight="15dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:text="@string/noughtPointNoughtNought"
+                    android:id="@+id/visibility"
+                    android:layout_column="2"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="50sp" />
+            </TableRow>
+
+        </TableLayout>
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/forecastDay1"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/Monday"
+                    android:textSize="75sp"
+                    android:layout_marginRight="15dp"
+                    android:textIsSelectable="false" />
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/forecastIcon1"
+                    android:layout_column="0"
+                    android:src="@drawable/full"
+                    android:contentDescription="@string/sunrise"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginRight="15dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/forecastDesc1"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/Description"
+                    android:textSize="50sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/forecastDay2"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/Monday"
+                    android:textSize="75sp"
+                    android:layout_marginRight="15dp"
+                    android:textIsSelectable="false" />
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/forecastIcon2"
+                    android:layout_column="0"
+                    android:contentDescription="@string/sunset"
+                    android:src="@drawable/full"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginRight="15dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/forecastDesc2"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/Description"
+                    android:textSize="50sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/forecastDay3"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/Monday"
+                    android:textSize="75sp"
+                    android:layout_marginRight="15dp"
+                    android:textIsSelectable="false" />
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/forecastIcon3"
+                    android:layout_column="0"
+                    android:contentDescription="@string/newmoon"
+                    android:src="@drawable/full"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/forecastDesc3"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/Description"
+                    android:textSize="50sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/forecastDay4"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/Monday"
+                    android:textSize="75sp"
+                    android:layout_marginRight="15dp"
+                    android:textIsSelectable="false" />
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/forecastIcon4"
+                    android:layout_column="0"
+                    android:src="@drawable/full"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:contentDescription="@string/fullmoon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/forecastDesc4"
+                    android:layout_column="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/Description"
+                    android:textSize="50sp" />
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+
 </RelativeLayout>
