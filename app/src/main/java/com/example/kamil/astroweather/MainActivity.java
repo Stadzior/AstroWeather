@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         dbManager = new DbManager();
         dbManager.database = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
         dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS Location(Name VARCHAR);");
+        //dbManager.database.execSQL("DROP TABLE IF EXISTS WeatherInfo;"); //TODO do wyyebanya
         StringBuilder builder = new StringBuilder("CREATE TABLE IF NOT EXISTS WeatherInfo (");
         builder.append("CityName VARCHAR,");
         builder.append("CountryName VARCHAR,");
@@ -162,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         builder.append("WindSpeed VARCHAR,");
         builder.append("WindDirection VARCHAR");
         builder.append("Humidity VARCHAR,");
+        builder.append("Visibility VARCHAR,");
         builder.append("ForecastDay2 VARCHAR,");
         builder.append("ForecastIconURL2 VARCHAR,");
         builder.append("ForecastDesc2 VARCHAR,");
@@ -325,8 +327,31 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
     }
 
     private void StoreDataInDatabase(WeatherInfo weatherInfo) {
-        String[] columns = {"CityName","CountryName"}; // TODO DOKONCZYC LISTE
-        String[] values = {"hue","hue"};
+        ArrayList<String> columns = dbManager.FetchColumnNames("WeatherInfo");
+        ArrayList<String> values = new ArrayList<>();
+        values.add(weatherInfo.getLocationCity());
+        values.add(weatherInfo.getLocationCountry());
+        values.add(weatherInfo.getCurrentText());
+        values.add(weatherInfo.getCurrentConditionIconURL());
+        values.add(String.valueOf(weatherInfo.getCurrentTemp()));
+        values.add(weatherInfo.getAtmospherePressure());
+        values.add(weatherInfo.getWindSpeed());
+        values.add(weatherInfo.getWindDirection());
+        values.add(weatherInfo.getAtmosphereHumidity());
+        values.add(weatherInfo.getAtmosphereVisibility());
+        values.add(weatherInfo.getAtmospherePressure());
+        values.add(weatherInfo.getForecastInfo2().getForecastDay());
+        values.add(weatherInfo.getForecastInfo2().getForecastConditionIconURL());
+        values.add(weatherInfo.getForecastInfo2().getForecastText());
+        values.add(weatherInfo.getForecastInfo3().getForecastDay());
+        values.add(weatherInfo.getForecastInfo3().getForecastConditionIconURL());
+        values.add(weatherInfo.getForecastInfo3().getForecastText());
+        values.add(weatherInfo.getForecastInfo4().getForecastDay());
+        values.add(weatherInfo.getForecastInfo4().getForecastConditionIconURL());
+        values.add(weatherInfo.getForecastInfo4().getForecastText());
+        values.add(weatherInfo.getForecastInfo5().getForecastDay());
+        values.add(weatherInfo.getForecastInfo5().getForecastConditionIconURL());
+        values.add(weatherInfo.getForecastInfo5().getForecastText());
         dbManager.InsertInto("WeatherInfo",columns,values);
     }
 
