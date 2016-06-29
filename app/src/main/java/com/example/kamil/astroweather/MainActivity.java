@@ -70,12 +70,60 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         SetUpConstants();
 
+        RefreshData(GetStoredWeatherInfo());
+
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
         SetUpSpinnerItems(spinner);
         AttachSpinnerOnItemSelectedListener(spinner);
 
         ClockThreadStart();
 
+    }
+
+  private WeatherInfo GetStoredWeatherInfo() {
+        Cursor resultSet = dbManager.FetchTable("WeatherInfo");
+        AdjustableWeatherInfo weatherInfo = null;
+        if(resultSet != null && resultSet.getCount()>0){
+        weatherInfo = new AdjustableWeatherInfo();
+        resultSet.moveToLast();
+
+        weatherInfo.setCityName(getStringCellValue(resultSet, "CityName"));
+        weatherInfo.setCountryName(getStringCellValue(resultSet, "CountryName"));
+        weatherInfo.setTemperature(getIntCellValue(resultSet, "Temperature"));
+        weatherInfo.setPressure(getStringCellValue(resultSet, "Pressure"));
+        weatherInfo.setWindSpeed(getStringCellValue(resultSet, "WindSpeed"));
+        weatherInfo.setWindDirection(getStringCellValue(resultSet, "WindDirection"));
+        weatherInfo.setLongitude(getStringCellValue(resultSet, "Longitude"));
+        weatherInfo.setLatitude(getStringCellValue(resultSet, "Latitude"));
+        weatherInfo.setHumidity(resultSet.getString(resultSet.getColumnIndex("Humidity")));
+        weatherInfo.setVisibility(resultSet.getString(resultSet.getColumnIndex("Visibility")));
+//        weatherInfo.setForecastInfo2(
+//                (getStringCellValue(resultSet, "ForecastDay2"))
+//                , ()
+//                , (getStringCellValue(resultSet, "ForecastIconURL2"))
+//                , (getStringCellValue(resultSet, "ForecastDesc2")));
+//        weatherInfo.setForecastInfo3(
+//                (getStringCellValue(resultSet, "ForecastDay3"))
+//                , (getStringCellValue(resultSet, "ForecastIconURL3"))
+//                , (getStringCellValue(resultSet, "ForecastDesc3")));
+//        weatherInfo.setForecastInfo4(
+//                (getStringCellValue(resultSet, "ForecastDay4"))
+//                , (getStringCellValue(resultSet, "ForecastIconURL4"))
+//                , (getStringCellValue(resultSet, "ForecastDesc4")));
+//        weatherInfo.setForecastInfo5(
+//                (getStringCellValue(resultSet, "ForecastDay5"))
+//                , (getStringCellValue(resultSet, "ForecastIconURL5"))
+//                , (getStringCellValue(resultSet, "ForecastDesc5")));
+        }
+        return weatherInfo;
+    }
+
+    private String getStringCellValue(Cursor resultSet,String columnName){
+        return resultSet.getString(resultSet.getColumnIndex(columnName));
+    }
+
+    private int getIntCellValue(Cursor resultSet,String columnName){
+        return resultSet.getInt(resultSet.getColumnIndex(columnName));
     }
 
     private void SetUpSpinnerItems(Spinner spinner) {
@@ -106,7 +154,32 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         dbManager = new DbManager();
         dbManager.database = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
         dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS Location(Name VARCHAR);");
-        dbManager.database.execSQL("CREATE TABLE IF NOT EXISTS LastSavedForecast(Name VARCHAR);");
+        StringBuilder builder = new StringBuilder("CREATE TABLE IF NOT EXISTS WeatherInfo (");
+        builder.append("CityName VARCHAR,");
+        builder.append("CountryName VARCHAR,");
+        builder.append("CurrentConditionText VARCHAR,");
+        builder.append("CurrentConditionIconURL VARCHAR,");
+        builder.append("Longitude VARCHAR,");
+        builder.append("Latitude VARCHAR,");
+        builder.append("Temperature INT,");
+        builder.append("Pressure VARCHAR,");
+        builder.append("WindSpeed VARCHAR,");
+        builder.append("WindDirection VARCHAR");
+        builder.append("Humidity VARCHAR,");
+        builder.append("ForecastDay2 VARCHAR,");
+        builder.append("ForecastIconURL2 VARCHAR,");
+        builder.append("ForecastDesc2 VARCHAR,");
+        builder.append("ForecastDay3 VARCHAR,");
+        builder.append("ForecastIconURL3 VARCHAR,");
+        builder.append("ForecastDesc3 VARCHAR,");
+        builder.append("ForecastDay4 VARCHAR,");
+        builder.append("ForecastIconURL4 VARCHAR,");
+        builder.append("ForecastDesc4 VARCHAR,");
+        builder.append("ForecastDay5 VARCHAR,");
+        builder.append("ForecastIconURL5 VARCHAR,");
+        builder.append("ForecastDesc5 VARCHAR");
+        builder.append(");");
+        dbManager.database.execSQL(builder.toString());
     }
 
     private void SetUpConstants() {
@@ -117,14 +190,15 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         if(mCityName == null) {
             if(spinner != null && spinner.getSelectedItem() != null){
-                mCityName = spinner != null ? spinner.getSelectedItem().toString() : "łódź";
+                mCityName = spinner.getSelectedItem().toString();
             }
             else{
                 mCityName = "";
             }
         }
         else{
-            dbManager.InsertInto("Location", "Name", mCityName);
+            if(!mCityName.isEmpty())
+                dbManager.InsertInto("Location", "Name", mCityName);
         }
     }
 
@@ -237,10 +311,8 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if(weatherInfo != null) {
 
-            RefreshTodayForecast(weatherInfo);
-
-            RefreshNextFourDaysForecast(weatherInfo);
-
+            RefreshData(weatherInfo);
+            StoreDataInDatabase(weatherInfo);
             if (fab != null) {
                 Snackbar.make(fab, "Data has been refreshed.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -253,6 +325,17 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 Snackbar.make(fab, "Chosen location is invalid.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
+        }
+    }
+
+    private void StoreDataInDatabase(WeatherInfo weatherInfo) {
+
+    }
+
+    private void RefreshData(WeatherInfo weatherInfo) {
+        if(weatherInfo!=null) {
+            RefreshTodayForecast(weatherInfo);
+            RefreshNextFourDaysForecast(weatherInfo);
         }
     }
 

@@ -32,7 +32,7 @@
     <string name="country">Country</string>
     <string name="temp">Temperature:</string>
     <string name="coords">Coordinates:</string>
-    <string name="preassure">Preassure:</string>
+    <string name="pressure">Preassure:</string>
     <string name="wind">Wind:</string>
     <string name="humidity">Humidity:</string>
     <string name="visibility">Visibility:</string>

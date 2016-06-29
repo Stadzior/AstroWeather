@@ -13,4 +13,8 @@ public class DbManager {
     public Cursor FetchColumn(String tableName, String columnName) {
         return database.rawQuery("Select "+columnName+" from "+tableName,null);
     }
+
+    public Cursor FetchTable(String tableName) {
+        return database.rawQuery("Select * from "+tableName,null);
+    }
 }

@@ -120,11 +120,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                android:id="@+id/preassureLabel"
+                android:id="@+id/pressureLabel"
                 android:layout_column="1"
                 android:layout_gravity="center_vertical"
                 android:textSize="20sp"
-                android:text="@string/preassure"
+                android:text="@string/pressure"
                 android:layout_marginRight="15dp" />
 
             <TextView
