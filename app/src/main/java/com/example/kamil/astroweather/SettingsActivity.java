@@ -121,6 +121,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+
+        // Setup handler for uncaught exceptions.
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable e) {
+                handleUncaughtException(thread, e);
+            }
+        });
+    }
+
+    private void handleUncaughtException(Thread thread, Throwable e) {
+        e.printStackTrace();
     }
 
     /**

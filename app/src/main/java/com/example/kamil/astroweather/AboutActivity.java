@@ -60,6 +60,17 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
+        // Setup handler for uncaught exceptions.
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable e) {
+                handleUncaughtException(thread, e);
+            }
+        });
+    }
+
+    private void handleUncaughtException(Thread thread, Throwable e) {
+        e.printStackTrace();
     }
 
     @Override
@@ -69,7 +80,7 @@ public class AboutActivity extends AppCompatActivity {
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        delayedHide(100);
+        //delayedHide(100);
     }
 
     @Override

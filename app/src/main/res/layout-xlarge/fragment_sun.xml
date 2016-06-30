@@ -244,8 +244,8 @@
                     android:textIsSelectable="false" />
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:id="@+id/forecastIcon1"
                     android:layout_column="0"
                     android:src="@drawable/full"
@@ -261,7 +261,7 @@
                     android:layout_column="1"
                     android:layout_gravity="center_vertical"
                     android:text="@string/Description"
-                    android:textSize="50sp" />
+                    android:textSize="45sp" />
 
             </TableRow>
 
@@ -282,8 +282,8 @@
                     android:textIsSelectable="false" />
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:id="@+id/forecastIcon2"
                     android:layout_column="0"
                     android:contentDescription="@string/sunset"
@@ -299,7 +299,7 @@
                     android:layout_column="1"
                     android:layout_gravity="center_vertical"
                     android:text="@string/Description"
-                    android:textSize="50sp" />
+                    android:textSize="45sp" />
 
             </TableRow>
 
@@ -320,8 +320,8 @@
                     android:textIsSelectable="false" />
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:id="@+id/forecastIcon3"
                     android:layout_column="0"
                     android:contentDescription="@string/newmoon"
@@ -337,7 +337,7 @@
                     android:layout_column="1"
                     android:layout_gravity="center_vertical"
                     android:text="@string/Description"
-                    android:textSize="50sp" />
+                    android:textSize="45sp" />
             </TableRow>
 
             <TableRow
@@ -357,8 +357,8 @@
                     android:textIsSelectable="false" />
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:id="@+id/forecastIcon4"
                     android:layout_column="0"
                     android:src="@drawable/full"
@@ -374,7 +374,7 @@
                     android:layout_column="1"
                     android:layout_gravity="center_vertical"
                     android:text="@string/Description"
-                    android:textSize="50sp" />
+                    android:textSize="45sp" />
             </TableRow>
 
         </TableLayout>
