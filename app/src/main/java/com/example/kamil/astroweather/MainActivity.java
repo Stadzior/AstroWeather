@@ -279,6 +279,11 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                         QueryForData();
                     }else{
                         RefreshData(data);
+                        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                        if (fab != null) {
+                            Snackbar.make(fab, "Restored data from memory.", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        }
                     }
                 }
             });
@@ -395,12 +400,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         if(weatherInfo!=null) {
             RefreshTodayForecast(weatherInfo);
             RefreshNextFourDaysForecast(weatherInfo);
-
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            if (fab != null) {
-                Snackbar.make(fab, "Restored data from memory.", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
         }
     }
 
