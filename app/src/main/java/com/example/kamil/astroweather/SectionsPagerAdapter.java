@@ -14,15 +14,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
 
         String key;
-        if(MainActivity.isTablet){
-            key = "commonFragment";
-        }else{
-            if(position == 0){
-                key = "sunFragment";
-            }
-            else{
-                key = "moonFragment";
-            }
+        if(position == 0){
+            key = "sunFragment";
+        }
+        else{
+            key = "moonFragment";
         }
         boolean alreadyHasASavedState = MainActivity.currentPages.containsKey(key);
         Fragment fragment;

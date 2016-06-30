@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         setSupportActionBar(toolbar);
 
-
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         SetUpViewPagerWithAdapter();
@@ -82,6 +81,14 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         AttachSpinnerOnItemSelectedListener(spinner);
 
         ClockThreadStart();
+
+        // Setup handler for uncaught exceptions.
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable e) {
+                handleUncaughtException(thread, e);
+            }
+        });
 
     }
 
@@ -255,14 +262,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
             }
         };
         clockThread.start();
-
-        // Setup handler for uncaught exceptions.
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable e) {
-                handleUncaughtException(thread, e);
-            }
-        });
     }
 
     private void handleUncaughtException(Thread thread, Throwable e) {
