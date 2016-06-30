@@ -455,10 +455,10 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         updateValueOnScreen(fragmentView, R.id.city,cityAndCountry);
 
         char longitudeSign = weatherInfo.getConditionLon().contains("-") ? 'W' : 'E';
-        String fixedLongitude = String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLon()))) + '°' + longitudeSign;
+        String fixedLongitude = String.valueOf(Math.abs(Math.round(Double.valueOf(weatherInfo.getConditionLon())))) + '°' + longitudeSign;
 
         char latitudeSign = weatherInfo.getConditionLat().contains("-") ? 'N' : 'S';
-        String fixedLatitude = String.valueOf(Math.round(Double.valueOf(weatherInfo.getConditionLat()))) + '°' + latitudeSign;
+        String fixedLatitude = String.valueOf(Math.abs(Math.round(Double.valueOf(weatherInfo.getConditionLat())))) + '°' + latitudeSign;
 
         updateValueOnScreen(fragmentView, R.id.coordinates,fixedLongitude + " " + fixedLatitude);
 
