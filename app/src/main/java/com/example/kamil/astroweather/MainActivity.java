@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 handleUncaughtException(thread, e);
             }
         });
-
     }
 
   private AdjustableWeatherInfo GetStoredWeatherInfo() {
@@ -127,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
                 getStringCellValue(resultSet,"ForecastDay5")
                 , getStringCellValue(resultSet, "ForecastIconURL5")
                 , getStringCellValue(resultSet, "ForecastDesc5"));
-        weatherInfo.setExpirationDate(System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(15));
+        weatherInfo.setExpirationDate(resultSet.getLong(resultSet.getColumnIndex("ExpirationDate")));
         }
         return weatherInfo;
     }
@@ -190,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         builder.append("ForecastDay5 VARCHAR,");
         builder.append("ForecastIconURL5 VARCHAR,");
         builder.append("ForecastDesc5 VARCHAR,");
-        builder.append("ExpirationDate VARCHAR");
+        builder.append("ExpirationDate INTEGER");
         builder.append(");");
         dbManager.database.execSQL(builder.toString());
     }
@@ -309,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         currentPages = new HashMap<>();
         if(getSupportFragmentManager().getFragments() != null) {
             if (isTablet) {
-                currentPages.put("commonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "commonFragment"));
+                currentPages.put("sunFragment", getSupportFragmentManager().getFragment(savedInstanceState, "sunFragment"));
             } else {
                 currentPages.put("sunFragment", getSupportFragmentManager().getFragment(savedInstanceState, "sunFragment"));
                 currentPages.put("moonFragment", getSupportFragmentManager().getFragment(savedInstanceState, "moonFragment"));
@@ -385,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
         values.add(weatherInfo.getForecastInfo5().getForecastDay());
         values.add(weatherInfo.getForecastInfo5().getForecastConditionIconURL());
         values.add(weatherInfo.getForecastInfo5().getForecastText());
-        values.add(String.valueOf(System.currentTimeMillis()));
+        values.add(String.valueOf(System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(15)));
         dbManager.InsertInto("WeatherInfo", columns, values);
     }
 
@@ -614,7 +613,7 @@ public class MainActivity extends AppCompatActivity implements YahooWeatherInfoL
 
         //Save the fragments instances
         if(isTablet){
-            getSupportFragmentManager().putFragment(outState, "commonFragment", currentPages.get("commonFragment"));
+            getSupportFragmentManager().putFragment(outState, "sunFragment", currentPages.get("sunFragment"));
         }
         else{
             getSupportFragmentManager().putFragment(outState, "sunFragment", currentPages.get("sunFragment"));

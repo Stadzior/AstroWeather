@@ -29,16 +29,21 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if(tabCounter>1)
-            tabCounter = 0;
         View rootView;
+        if(MainActivity.isTablet){
+            rootView = inflater.inflate(R.layout.fragment_sun, container, false);
+        }else{
+            if(tabCounter>1)
+                tabCounter = 0;
             if(mPosition == 0 && tabCounter == 0){
                 rootView = inflater.inflate(R.layout.fragment_sun, container, false);
             }
             else{
                 rootView = inflater.inflate(R.layout.fragment_moon, container, false);
             }
-        tabCounter ++;
+            tabCounter ++;
+
+        }
 
         return rootView;
     }
